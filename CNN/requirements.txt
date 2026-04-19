@@ -1,0 +1,9 @@
+# Python version is 3.14.0
+numpy
+pandas
+matplotlib
+opencv-python
+
+torch
+torchvision
+torchchaudio
