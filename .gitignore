@@ -1,0 +1,30 @@
+# Data (too large for Git)
+data/raw/
+data/kaggle_exercise_videos/
+data/coco_val2017/
+data/mpii_val/
+
+# Keep processed data (small .npy files)
+# data/processed/ is NOT ignored — commit these for teammate access
+
+# Model weights
+models/*.pth
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
