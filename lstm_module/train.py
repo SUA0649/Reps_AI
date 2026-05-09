@@ -253,6 +253,10 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--patience', type=int, default=10)
+    parser.add_argument('--resume', action='store_true',
+                        help='Resume training from last checkpoint (use after Colab disconnect)')
+    parser.add_argument('--checkpoint_every', type=int, default=5,
+                        help='Save checkpoint every N epochs (default: 5)')
     args = parser.parse_args()
 
     train_model(
@@ -262,4 +266,6 @@ if __name__ == "__main__":
         batch_size=args.batch_size,
         lr=args.lr,
         patience=args.patience,
+        resume=args.resume,
+        checkpoint_every=args.checkpoint_every,
     )
