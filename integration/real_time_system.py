@@ -40,7 +40,7 @@ class RealTimeSystem:
     """Real-time exercise analysis with webcam input, optimized for MacBook."""
 
     def __init__(self, lstm_model_path, exercise_type='squat',
-                 window_size=60, pose_model_path=None, device=None):
+                 window_size=60, pose_model_path=None, device=None, video_path=None):
         """
         Args:
             lstm_model_path: path to trained LSTM weights (.pth)
@@ -52,6 +52,7 @@ class RealTimeSystem:
         self.exercise_type = exercise_type
         self.window_size = window_size
         self.pose_model_path = pose_model_path or POSE_MODEL_PATH
+        self.video_path = video_path
 
         # Pick best available device (MPS = Apple Silicon GPU)
         if device:
@@ -96,6 +97,7 @@ class RealTimeSystem:
         self._angle_history = deque(maxlen=90)  # 3 seconds of angle data
         self._rep_cooldown = 0  # frames to wait after detecting a rep
         self._prev_angle_state = 'up'  # 'up' or 'down' — tracks rep phases
+        self._frames_below_threshold = 0  # consecutive frames below 'down' threshold
 
     def _landmarks_to_numpy(self, result):
         """Convert PoseLandmarkerResult to (33, 4) numpy array."""
@@ -117,10 +119,10 @@ class RealTimeSystem:
                   "pose_landmarker_heavy.task")
             return
 
-        # Open webcam
-        cap = cv2.VideoCapture(0)
+        # Open webcam or video file
+        cap = cv2.VideoCapture(self.video_path if self.video_path else 0)
         if not cap.isOpened():
-            print("❌ Cannot open webcam!")
+            print(f"❌ Cannot open {'video file' if self.video_path else 'webcam'}!")
             return
 
         # Set camera resolution for performance
@@ -152,8 +154,9 @@ class RealTimeSystem:
                 if not ret:
                     break
 
-                # Mirror for natural interaction
-                frame = cv2.flip(frame, 1)
+                # Mirror for natural interaction if using webcam
+                if not self.video_path:
+                    frame = cv2.flip(frame, 1)
 
                 # ---- POSE ESTIMATION (MediaPipe) ----
                 rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -242,30 +245,45 @@ class RealTimeSystem:
 
     def _count_rep_by_angle(self, current_angle):
         """
-        Count reps using angle state machine (up/down transitions).
-        Much more reliable than LSTM regression for counting.
+        Count reps using angle state machine with noise filtering.
 
-        A rep = angle goes below threshold (down) then back above (up).
+        Tuned for ~48 FPS on M4 MacBook:
+          1. 15-frame moving average smoothing
+          2. Must stay below 'down' threshold for 20 consecutive frames (~0.4s)
+          3. 45-frame cooldown (~1s) after each rep
         """
-        # Thresholds per exercise
+        # Smooth angle over last 15 frames
+        history = list(self._angle_history)
+        smoothed = float(np.mean(history[-15:])) if len(history) >= 15 else current_angle
+
+        # Thresholds — stricter 'down' values to avoid false triggers
         thresholds = {
-            'squat':       {'down': 120, 'up': 150},  # Knee: <120° = bottom, >150° = standing
-            'pushup':      {'down': 110, 'up': 150},  # Elbow: <110° = bottom, >150° = top
-            'hammer_curl': {'down': 70,  'up': 130},  # Elbow: <70° = curled, >130° = extended
+            'squat':       {'down': 110, 'up': 160, 'confirm': 20},
+            'pushup':      {'down': 100, 'up': 160, 'confirm': 20},
+            'hammer_curl': {'down': 70,  'up': 150, 'confirm': 20},
         }
-        t = thresholds.get(self.exercise_type, {'down': 110, 'up': 150})
+        t = thresholds.get(self.exercise_type, {'down': 105, 'up': 160, 'confirm': 20})
 
         if self._rep_cooldown > 0:
             self._rep_cooldown -= 1
             return
 
-        if self._prev_angle_state == 'up' and current_angle < t['down']:
-            self._prev_angle_state = 'down'
-        elif self._prev_angle_state == 'down' and current_angle > t['up']:
+        if self._prev_angle_state == 'up':
+            if smoothed < t['down']:
+                self._frames_below_threshold += 1
+                if self._frames_below_threshold >= t['confirm']:
+                    self._prev_angle_state = 'down'
+                    self._frames_below_threshold = 0
+            else:
+                self._frames_below_threshold = 0
+
+        elif self._prev_angle_state == 'down' and smoothed > t['up']:
             self._prev_angle_state = 'up'
+            self._frames_below_threshold = 0
             self.total_reps += 1
-            self._rep_cooldown = 10  # Ignore next 10 frames (~0.3s debounce)
-            print(f"\r   Rep #{self.total_reps} detected (angle: {current_angle:.0f}°)", end='')
+            self._rep_cooldown = 45  # ~1s at 48fps
+            print(f"\r   Rep #{self.total_reps} ✅  (smoothed: {smoothed:.0f}°)", end='')
+
 
     def _run_lstm_inference(self):
         """Run LSTM — used for FORM prediction only (rep counting uses angle method)."""
@@ -281,13 +299,10 @@ class RealTimeSystem:
         # (Rep counting now handled by _count_rep_by_angle — LSTM used for form only)
 
         # Update form display
-        # Thresholds tuned for real-world (model trained on clean Kaggle videos,
-        # live conditions are noisier so probabilities sit lower)
-        self.current_form_prob = form_prob  # store for overlay display
-        if form_prob > 0.5:
+        if form_prob > 0.7:
             self.current_form = "GOOD FORM"
             self.form_color = (0, 200, 0)     # Green
-        elif form_prob > 0.3:
+        elif form_prob > 0.4:
             self.current_form = "CHECK FORM"
             self.form_color = (0, 200, 200)
         else:
@@ -338,10 +353,9 @@ class RealTimeSystem:
         cv2.putText(frame, f"Reps: {self.total_reps}",
                     (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 255), 3)
 
-        # Form quality + raw probability (for debugging/tuning)
-        form_prob_display = getattr(self, 'current_form_prob', 0.0)
-        cv2.putText(frame, f"{self.current_form} ({form_prob_display:.2f})",
-                    (20, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, self.form_color, 2)
+        # Form quality
+        cv2.putText(frame, self.current_form,
+                    (20, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.8, self.form_color, 2)
 
         # Primary joint angle
         primary_map = {'squat': 'left_knee', 'pushup': 'left_elbow',
@@ -377,6 +391,8 @@ if __name__ == "__main__":
                         help='Path to MediaPipe .task model')
     parser.add_argument('--lite', action='store_true',
                         help='Use lite pose model for better FPS (~15-20 FPS vs ~9 FPS)')
+    parser.add_argument('--video', type=str, default=None,
+                        help='Path to a video file to analyze instead of webcam')
     args = parser.parse_args()
 
     # Choose pose model
@@ -391,5 +407,6 @@ if __name__ == "__main__":
         lstm_model_path=args.model,
         exercise_type=args.exercise,
         pose_model_path=pose_path,
+        video_path=args.video,
     )
     system.run()
