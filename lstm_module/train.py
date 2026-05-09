@@ -28,7 +28,8 @@ from lstm_module.dataset import build_datasets
 
 
 def train_model(data_dir, output_dir='models', epochs=100, batch_size=32,
-                lr=0.001, lambda_form=0.5, patience=10, window_size=60):
+                lr=0.001, lambda_form=0.5, patience=10, window_size=60,
+                resume=False, checkpoint_every=5):
     """
     Train the ExerciseLSTM model.
 
@@ -41,6 +42,8 @@ def train_model(data_dir, output_dir='models', epochs=100, batch_size=32,
         lambda_form: weight for form loss (total = rep_loss + λ * form_loss)
         patience: early stopping patience (epochs without improvement)
         window_size: sliding window size
+        resume: if True, resume from last checkpoint (for Colab disconnects)
+        checkpoint_every: save checkpoint every N epochs
     """
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
@@ -69,6 +72,7 @@ def train_model(data_dir, output_dir='models', epochs=100, batch_size=32,
     # Training tracking
     best_val_loss = float('inf')
     patience_counter = 0
+    start_epoch = 0
     history = {'train_loss': [], 'val_loss': [],
                'train_rep_loss': [], 'train_form_loss': [],
                'val_rep_loss': [], 'val_form_loss': []}
@@ -76,11 +80,26 @@ def train_model(data_dir, output_dir='models', epochs=100, batch_size=32,
     output_path = Path(output_dir)
     output_path.mkdir(exist_ok=True)
 
-    print(f"\nStarting training for {epochs} epochs...")
+    # ===== RESUME FROM CHECKPOINT =====
+    checkpoint_path = output_path / 'checkpoint.pth'
+    if resume and checkpoint_path.exists():
+        print("\n🔄 Resuming from checkpoint...")
+        checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        start_epoch = checkpoint['epoch'] + 1
+        best_val_loss = checkpoint['best_val_loss']
+        patience_counter = checkpoint['patience_counter']
+        history = checkpoint['history']
+        print(f"   Resumed from epoch {start_epoch}, best_val_loss: {best_val_loss:.4f}")
+    elif resume:
+        print("⚠️ --resume flag set but no checkpoint found. Starting fresh.")
+
+    print(f"\nStarting training for epochs {start_epoch+1}-{epochs}...")
     print(f"{'Epoch':>5} | {'Train Loss':>10} | {'Val Loss':>10} | {'Rep Loss':>10} | {'Form Loss':>10}")
     print("-" * 60)
 
-    for epoch in range(epochs):
+    for epoch in range(start_epoch, epochs):
         # ===== TRAINING PHASE =====
         model.train()
         train_losses = {'total': [], 'rep': [], 'form': []}
@@ -152,6 +171,18 @@ def train_model(data_dir, output_dir='models', epochs=100, batch_size=32,
             if patience_counter >= patience:
                 print(f"\n⏹ Early stopping at epoch {epoch+1} (no improvement for {patience} epochs)")
                 break
+
+        # ===== PERIODIC CHECKPOINT (for Colab T4 disconnects) =====
+        if (epoch + 1) % checkpoint_every == 0:
+            torch.save({
+                'epoch': epoch,
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'best_val_loss': best_val_loss,
+                'patience_counter': patience_counter,
+                'history': history,
+            }, output_path / 'checkpoint.pth')
+            print(f"       💾 Checkpoint saved at epoch {epoch+1}")
 
     # ===== FINAL EVALUATION ON TEST SET =====
     print("\n" + "=" * 60)
