@@ -40,7 +40,7 @@ class RealTimeSystem:
     """Real-time exercise analysis with webcam input, optimized for MacBook."""
 
     def __init__(self, lstm_model_path, exercise_type='squat',
-                 window_size=60, pose_model_path=None, device=None):
+                 window_size=60, pose_model_path=None, device=None, video_source=0):
         """
         Args:
             lstm_model_path: path to trained LSTM weights (.pth)
@@ -48,10 +48,12 @@ class RealTimeSystem:
             window_size: number of frames to buffer for LSTM
             pose_model_path: path to MediaPipe .task model file
             device: 'cuda', 'mps', or 'cpu'
+            video_source: 0 for webcam, or path to video file
         """
         self.exercise_type = exercise_type
         self.window_size = window_size
-        self.pose_model_path = pose_model_path or POSE_MODEL_PATH
+        self.pose_model_path = pose_model_path or POSE_MODEL_LITE
+        self.video_source = video_source
 
         # Pick best available device (MPS = Apple Silicon GPU)
         if device:
@@ -117,16 +119,17 @@ class RealTimeSystem:
                   "pose_landmarker_heavy.task")
             return
 
-        # Open webcam
-        cap = cv2.VideoCapture(0)
+        # Open webcam or video file
+        cap = cv2.VideoCapture(self.video_source)
         if not cap.isOpened():
-            print("❌ Cannot open webcam!")
+            print(f"❌ Cannot open video source: {self.video_source}")
             return
 
-        # Set camera resolution for performance
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        cap.set(cv2.CAP_PROP_FPS, 30)
+        # Set camera resolution for performance (only matters for webcam)
+        if isinstance(self.video_source, int):
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            cap.set(cv2.CAP_PROP_FPS, 30)
 
         print(f"🏋️ Real-time {self.exercise_type} analysis started!")
         print(f"   Device: {self.device}")
@@ -152,8 +155,9 @@ class RealTimeSystem:
                 if not ret:
                     break
 
-                # Mirror for natural interaction
-                frame = cv2.flip(frame, 1)
+                # Mirror for natural interaction if using webcam
+                if isinstance(self.video_source, int):
+                    frame = cv2.flip(frame, 1)
 
                 # ---- POSE ESTIMATION (MediaPipe) ----
                 rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -377,6 +381,8 @@ if __name__ == "__main__":
                         help='Path to MediaPipe .task model')
     parser.add_argument('--lite', action='store_true',
                         help='Use lite pose model for better FPS (~15-20 FPS vs ~9 FPS)')
+    parser.add_argument('--input', type=str, default='0',
+                        help='Video input source (0 for webcam, or path to video file)')
     args = parser.parse_args()
 
     # Choose pose model
@@ -387,9 +393,13 @@ if __name__ == "__main__":
     else:
         pose_path = POSE_MODEL_HEAVY
 
+    # Check if input is a digit (webcam ID) or string (file path)
+    video_source = int(args.input) if args.input.isdigit() else args.input
+
     system = RealTimeSystem(
         lstm_model_path=args.model,
         exercise_type=args.exercise,
         pose_model_path=pose_path,
+        video_source=video_source
     )
     system.run()

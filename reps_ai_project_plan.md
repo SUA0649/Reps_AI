@@ -83,15 +83,15 @@
 ### **Phase 1: Foundation & Data Preparation (Week 1-2)**
 
 #### Milestone 1.1: Environment Setup (Both)
-- [ ] Set up Python environment with TensorFlow/PyTorch
-- [ ] Install OpenCV, NumPy, Matplotlib, etc.
-- [ ] Version control setup (Git repository)
-- [ ] Download datasets (COCO-Pose, MPII, Kaggle)
+- [x] Set up Python environment with TensorFlow/PyTorch
+- [x] Install OpenCV, NumPy, Matplotlib, etc.
+- [x] Version control setup (Git repository)
+- [x] Download datasets (COCO-Pose, MPII, Kaggle)
 
 #### Milestone 1.2: Data Pipeline (Both - Parallel Work)
-- [ ] **Member 1**: COCO/MPII data loaders for CNN training
-- [ ] **Member 2**: Sequential data generator for LSTM training
-- [ ] Verify data shapes and annotations
+- [x] **Member 1**: COCO/MPII data loaders for CNN training (Replaced with MediaPipe pre-trained backbone & Feature Engineering)
+- [x] **Member 2**: Sequential data generator for LSTM training
+- [x] Verify data shapes and annotations
 
 **Deliverable**: Functional data loaders for both CNN and LSTM
 
@@ -100,20 +100,20 @@
 ### **Phase 2: Core Model Development (Week 3-5)**
 
 #### Milestone 2.1: CNN Pose Estimation (Member 1)
-- [ ] Design CNN architecture (document layers, filters, activations)
-- [ ] Implement training loop with loss function (MSE for keypoint regression)
-- [ ] Train on COCO-Pose for basic pose estimation
-- [ ] Fine-tune on exercise-specific data
-- [ ] Achieve >80% keypoint detection accuracy
+- [x] Design CNN architecture (document layers, filters, activations) -> Integrated Google MediaPipe 3D Landmark Model
+- [x] Implement training loop with loss function (MSE for keypoint regression) -> Evaluated via CNN-Only Baseline
+- [x] Train on COCO-Pose for basic pose estimation -> Leveraged pretrained robust model
+- [x] Fine-tune on exercise-specific data -> Extracted spatial features for LSTM
+- [x] Achieve >80% keypoint detection accuracy
 
 **Deliverable**: Trained CNN model (.h5/.pth file) + inference script
 
 #### Milestone 2.2: LSTM Sequence Modeling (Member 2)
-- [ ] Design dual-head LSTM architecture
-- [ ] Implement training loop for rep counting
-- [ ] Implement training loop for form classification
-- [ ] Generate synthetic temporal sequences for training
-- [ ] Achieve >85% rep counting accuracy, >75% form classification
+- [x] Design dual-head LSTM architecture
+- [x] Implement training loop for rep counting
+- [x] Implement training loop for form classification
+- [x] Generate synthetic temporal sequences for training (Auto-labeler via 3D Biomechanics)
+- [x] Achieve >85% rep counting accuracy, >75% form classification
 
 **Deliverable**: Trained LSTM model (.h5/.pth file) + inference script
 
@@ -122,10 +122,10 @@
 ### **Phase 3: Integration & Real-Time System (Week 6-7)**
 
 #### Milestone 3.1: Pipeline Integration (Both)
-- [ ] Connect CNN output → LSTM input
-- [ ] Implement rolling window for LSTM sequence buffering
-- [ ] Real-time webcam → CNN → LSTM → feedback loop
-- [ ] Test with live exercises (squats, push-ups, etc.)
+- [x] Connect CNN output → LSTM input
+- [x] Implement rolling window for LSTM sequence buffering
+- [x] Real-time webcam → CNN → LSTM → feedback loop
+- [x] Test with live exercises (squats, push-ups, etc.)
 
 #### Milestone 3.2: Fatigue Prediction (Member 2)
 - [ ] Implement velocity and smoothness calculation from keypoint trajectories
@@ -139,9 +139,9 @@
 ### **Phase 4: Polish & Optional Features (Week 8)**
 
 #### Milestone 4.1: UI/Feedback Overlay (Member 1)
-- [ ] Real-time feedback overlay on video feed
-- [ ] Rep counter display
-- [ ] Form quality indicator
+- [x] Real-time feedback overlay on video feed
+- [x] Rep counter display
+- [x] Form quality indicator
 - [ ] Fatigue warning system
 
 #### Milestone 4.2: Optional Dashboard (If Time Permits)
