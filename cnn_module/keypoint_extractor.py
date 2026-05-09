@@ -1,14 +1,20 @@
 """
 Keypoint Extraction Module using MediaPipe Pose (Shaheer)
 =========================================================
-Wraps Google's MediaPipe Pose to extract 33 body landmarks from video frames.
-Each landmark has (x, y, z, visibility).
+Wraps Google's MediaPipe PoseLandmarker (Tasks API) to extract 33 body
+landmarks from video frames. Each landmark has (x, y, z, visibility).
 
 HOW MediaPipe WORKS (for viva):
   - Uses a MobileNetV2 backbone (CNN) for feature extraction
   - BlazePose architecture: detector finds person, then landmark model predicts 33 points
   - Trained on a large proprietary dataset of human poses
   - Runs on CPU at 30+ FPS — no GPU needed for inference
+
+IMPORTANT: This uses the NEW MediaPipe Tasks API (v0.10.35+).
+  - The old `mp.solutions.pose` API has been removed.
+  - You must download the model file:
+    curl -L -o models/pose_landmarker_heavy.task \\
+      https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/latest/pose_landmarker_heavy.task
 
 MediaPipe Pose Landmarks (33 total):
   0: nose
@@ -27,12 +33,16 @@ import cv2
 import numpy as np
 import mediapipe as mp
 from pathlib import Path
-from tqdm import tqdm
-import json
+
+# New Tasks API imports
+BaseOptions = mp.tasks.BaseOptions
+PoseLandmarker = mp.tasks.vision.PoseLandmarker
+PoseLandmarkerOptions = mp.tasks.vision.PoseLandmarkerOptions
+VisionRunningMode = mp.tasks.vision.RunningMode
 
 
 class KeypointExtractor:
-    """Extract pose keypoints from video frames using MediaPipe Pose."""
+    """Extract pose keypoints from video frames using MediaPipe PoseLandmarker."""
 
     # Map MediaPipe's 33 landmarks → COCO's 17 keypoints (for benchmark evaluation)
     MEDIAPIPE_TO_COCO = {
@@ -47,54 +57,98 @@ class KeypointExtractor:
         27: 'left_ankle',  28: 'right_ankle',
     }
 
-    def __init__(self, model_complexity=1, min_detection_confidence=0.5,
-                 min_tracking_confidence=0.5):
+    # Default model path (download to models/ directory)
+    DEFAULT_MODEL_PATH = str(Path(__file__).parent.parent / 'models' / 'pose_landmarker_heavy.task')
+
+    def __init__(self, model_path=None, num_poses=1,
+                 min_detection_confidence=0.5, min_tracking_confidence=0.5):
         """
-        Initialize MediaPipe Pose.
+        Initialize MediaPipe PoseLandmarker.
 
         Args:
-            model_complexity: 0=lite, 1=full, 2=heavy. Higher = more accurate but slower.
-            min_detection_confidence: Threshold for initial person detection.
-            min_tracking_confidence: Threshold for frame-to-frame landmark tracking.
+            model_path: path to .task model file. If None, uses default location.
+            num_poses: max number of people to detect (1 for our use case)
+            min_detection_confidence: threshold for initial person detection.
+            min_tracking_confidence: threshold for landmark tracking between frames.
         """
-        self.mp_pose = mp.solutions.pose
-        self.pose = self.mp_pose.Pose(
-            static_image_mode=False,   # Video mode: uses tracking between frames for speed
-            model_complexity=model_complexity,
-            min_detection_confidence=min_detection_confidence,
-            min_tracking_confidence=min_tracking_confidence,
+        self.model_path = model_path or self.DEFAULT_MODEL_PATH
+
+        if not Path(self.model_path).exists():
+            raise FileNotFoundError(
+                f"Model file not found: {self.model_path}\n"
+                "Download it with:\n"
+                "  curl -L -o models/pose_landmarker_heavy.task \\\n"
+                "    https://storage.googleapis.com/mediapipe-models/"
+                "pose_landmarker/pose_landmarker_heavy/float16/latest/"
+                "pose_landmarker_heavy.task"
+            )
+
+        # We'll create landmarker instances per-use because VIDEO mode requires
+        # monotonically increasing timestamps
+        self._num_poses = num_poses
+        self._min_detection_confidence = min_detection_confidence
+        self._min_tracking_confidence = min_tracking_confidence
+
+    def _create_landmarker(self, mode='IMAGE'):
+        """Create a PoseLandmarker instance for the given mode."""
+        running_mode = {
+            'IMAGE': VisionRunningMode.IMAGE,
+            'VIDEO': VisionRunningMode.VIDEO,
+        }[mode]
+
+        options = PoseLandmarkerOptions(
+            base_options=BaseOptions(model_asset_path=self.model_path),
+            running_mode=running_mode,
+            num_poses=self._num_poses,
+            min_pose_detection_confidence=self._min_detection_confidence,
+            min_tracking_confidence=self._min_tracking_confidence,
         )
-        self.mp_drawing = mp.solutions.drawing_utils
+        return PoseLandmarker.create_from_options(options)
+
+    def _result_to_numpy(self, result):
+        """
+        Convert PoseLandmarkerResult to numpy array.
+
+        Args:
+            result: PoseLandmarkerResult from the landmarker
+
+        Returns:
+            landmarks: (33, 4) numpy array of (x, y, z, visibility)
+                       Returns None if no person detected.
+        """
+        if not result.pose_landmarks:
+            return None
+
+        # Take the first detected person
+        pose = result.pose_landmarks[0]
+
+        landmarks = np.array([
+            [lm.x, lm.y, lm.z, lm.visibility]
+            for lm in pose
+        ])  # Shape: (33, 4)
+
+        return landmarks
 
     def extract_from_frame(self, frame):
         """
-        Extract 33 landmarks from a single BGR frame.
+        Extract 33 landmarks from a single BGR frame (IMAGE mode).
 
         Args:
             frame: BGR image (H, W, 3) from OpenCV
 
         Returns:
             landmarks: numpy array shape (33, 4) → (x, y, z, visibility)
-                       x, y are normalized [0, 1] relative to frame dimensions
-                       z is depth relative to hips (negative = closer to camera)
                        Returns None if no person detected.
         """
-        # MediaPipe expects RGB input, but OpenCV reads BGR
+        # Convert BGR → RGB for MediaPipe
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
 
-        # Run pose estimation
-        results = self.pose.process(rgb_frame)
+        # Use IMAGE mode for single-frame detection
+        with self._create_landmarker('IMAGE') as landmarker:
+            result = landmarker.detect(mp_image)
 
-        if results.pose_landmarks is None:
-            return None
-
-        # Convert landmark protobuf objects to numpy array
-        landmarks = np.array([
-            [lm.x, lm.y, lm.z, lm.visibility]
-            for lm in results.pose_landmarks.landmark
-        ])  # Shape: (33, 4)
-
-        return landmarks
+        return self._result_to_numpy(result)
 
     def extract_from_video(self, video_path, target_fps=30):
         """
@@ -116,28 +170,37 @@ class KeypointExtractor:
         original_fps = cap.get(cv2.CAP_PROP_FPS)
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        # If original video is 60fps and we want 30fps, take every 2nd frame
+        # Frame sampling to achieve target FPS
         frame_interval = max(1, round(original_fps / target_fps)) if original_fps > 0 else 1
 
         all_keypoints = []
         frame_idx = 0
+        timestamp_ms = 0
+        frame_duration_ms = int(1000 / target_fps)
 
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
+        # Use VIDEO mode for frame-to-frame tracking
+        with self._create_landmarker('VIDEO') as landmarker:
+            while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    break
 
-            # Sample frames to match target FPS
-            if frame_idx % frame_interval == 0:
-                landmarks = self.extract_from_frame(frame)
+                if frame_idx % frame_interval == 0:
+                    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
 
-                if landmarks is not None:
-                    all_keypoints.append(landmarks)
-                elif all_keypoints:
-                    # Brief occlusion: reuse last known keypoints
-                    all_keypoints.append(all_keypoints[-1].copy())
+                    result = landmarker.detect_for_video(mp_image, timestamp_ms)
+                    landmarks = self._result_to_numpy(result)
 
-            frame_idx += 1
+                    if landmarks is not None:
+                        all_keypoints.append(landmarks)
+                    elif all_keypoints:
+                        # Brief occlusion: reuse last known keypoints
+                        all_keypoints.append(all_keypoints[-1].copy())
+
+                    timestamp_ms += frame_duration_ms
+
+                frame_idx += 1
 
         cap.release()
 
@@ -181,7 +244,7 @@ class KeypointExtractor:
         Draw pose skeleton overlay on a frame for visualization.
 
         Args:
-            frame: BGR image to draw on (will be copied, not modified in-place)
+            frame: BGR image to draw on (will be copied)
             landmarks: (33, 4) array of landmarks
 
         Returns:
@@ -190,44 +253,42 @@ class KeypointExtractor:
         annotated = frame.copy()
         h, w = frame.shape[:2]
 
-        # Skeleton connections: pairs of landmark indices to draw lines between
+        # Skeleton connections: pairs of landmark indices
         connections = [
-            (11, 13), (13, 15),   # Left arm:   shoulder → elbow → wrist
-            (12, 14), (14, 16),   # Right arm:  shoulder → elbow → wrist
+            (11, 13), (13, 15),   # Left arm
+            (12, 14), (14, 16),   # Right arm
             (11, 12),             # Shoulder line
             (11, 23), (12, 24),   # Torso sides
             (23, 24),             # Hip line
-            (23, 25), (25, 27),   # Left leg:   hip → knee → ankle
-            (24, 26), (26, 28),   # Right leg:  hip → knee → ankle
+            (23, 25), (25, 27),   # Left leg
+            (24, 26), (26, 28),   # Right leg
         ]
 
-        # Draw bones (lines between connected joints)
         for start_idx, end_idx in connections:
             start = (int(landmarks[start_idx, 0] * w), int(landmarks[start_idx, 1] * h))
             end = (int(landmarks[end_idx, 0] * w), int(landmarks[end_idx, 1] * h))
             cv2.line(annotated, start, end, (0, 255, 0), 2)
 
-        # Draw joints (circles at each keypoint)
         for i in [0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28]:
-            if landmarks[i, 3] > 0.5:  # Only draw if confidence > 0.5
+            if landmarks[i, 3] > 0.5:
                 cx, cy = int(landmarks[i, 0] * w), int(landmarks[i, 1] * h)
                 cv2.circle(annotated, (cx, cy), 5, (0, 0, 255), -1)
 
         return annotated
 
     def close(self):
-        """Release MediaPipe resources."""
-        self.pose.close()
+        """No persistent resources to release in Tasks API."""
+        pass
 
 
 # ============================================================
-# Quick test: Run this file directly to verify MediaPipe works
-# Usage: python -m cnn_module.keypoint_extractor
+# Quick test: Run from project root with:
+#   python -m cnn_module.keypoint_extractor [optional_video_path]
 # ============================================================
 if __name__ == "__main__":
     import sys
 
-    extractor = KeypointExtractor(model_complexity=1)
+    extractor = KeypointExtractor()
 
     if len(sys.argv) > 1:
         # Test on a video file
@@ -237,7 +298,7 @@ if __name__ == "__main__":
         print(f"Extracted {keypoints.shape[0]} frames, shape: {keypoints.shape}")
         print(f"Metadata: {meta}")
     else:
-        # Test on webcam
+        # Test on webcam (single frame)
         print("Testing with webcam (press 'q' to quit)...")
         cap = cv2.VideoCapture(0)
 
@@ -250,9 +311,11 @@ if __name__ == "__main__":
 
             if landmarks is not None:
                 frame = extractor.draw_skeleton(frame, landmarks)
-                # Display landmark count
                 cv2.putText(frame, f"Landmarks: {landmarks.shape[0]}", (10, 30),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            else:
+                cv2.putText(frame, "No person detected", (10, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
             cv2.imshow('Keypoint Extractor Test', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):

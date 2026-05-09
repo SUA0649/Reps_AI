@@ -39,7 +39,7 @@ class RealTimeSystem:
         self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
 
         # Initialize modules
-        self.extractor = KeypointExtractor(model_complexity=1)
+        self.extractor = KeypointExtractor()
         self.feature_eng = FeatureEngineer()
 
         # Load trained LSTM model

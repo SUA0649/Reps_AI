@@ -1,0 +1,221 @@
+{
+  "exercise_type": "pushup",
+  "rep_count": 19,
+  "rep_boundaries": [
+    [
+      0,
+      12,
+      24
+    ],
+    [
+      24,
+      36,
+      49
+    ],
+    [
+      49,
+      63,
+      77
+    ],
+    [
+      77,
+      92,
+      106
+    ],
+    [
+      106,
+      120,
+      135
+    ],
+    [
+      135,
+      150,
+      165
+    ],
+    [
+      165,
+      181,
+      197
+    ],
+    [
+      197,
+      213,
+      229
+    ],
+    [
+      229,
+      246,
+      313
+    ],
+    [
+      313,
+      380,
+      399
+    ],
+    [
+      399,
+      418,
+      435
+    ],
+    [
+      435,
+      452,
+      469
+    ],
+    [
+      469,
+      486,
+      503
+    ],
+    [
+      503,
+      521,
+      539
+    ],
+    [
+      539,
+      557,
+      575
+    ],
+    [
+      575,
+      593,
+      612
+    ],
+    [
+      612,
+      631,
+      651
+    ],
+    [
+      651,
+      671,
+      690
+    ],
+    [
+      690,
+      710,
+      777
+    ]
+  ],
+  "form_labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "form_details": [
+    {
+      "min_angle": 57.955136978207605,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 58.96621037384316,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 63.9913460169938,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 53.089207603985244,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 62.175114797405634,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 60.954068896515444,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 58.89034960922636,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 56.82111267612978,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 55.233732301110585,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 36.22333818928835,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 37.88861782057243,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 37.32309682704131,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 38.874053737447966,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 41.20620526886216,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 41.67158249786077,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 39.19955315147044,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 36.99376637952349,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 36.02324284341781,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 35.02847380214764,
+      "depth_ok": true,
+      "half_rep": false
+    }
+  ],
+  "avg_form_quality": 1.0,
+  "num_frames": 778
+}

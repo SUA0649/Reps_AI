@@ -1,0 +1,24 @@
+{
+  "exercise_type": "squat",
+  "rep_count": 1,
+  "rep_boundaries": [
+    [
+      0,
+      55,
+      197
+    ]
+  ],
+  "form_labels": [
+    0
+  ],
+  "form_details": [
+    {
+      "min_angle": 26.53802885444422,
+      "depth_ok": true,
+      "half_rep": false,
+      "back_ok": false
+    }
+  ],
+  "avg_form_quality": 0.0,
+  "num_frames": 198
+}

@@ -1,0 +1,144 @@
+{
+  "exercise_type": "pushup",
+  "rep_count": 12,
+  "rep_boundaries": [
+    [
+      0,
+      23,
+      54
+    ],
+    [
+      54,
+      85,
+      115
+    ],
+    [
+      115,
+      145,
+      169
+    ],
+    [
+      169,
+      194,
+      224
+    ],
+    [
+      224,
+      255,
+      274
+    ],
+    [
+      274,
+      294,
+      306
+    ],
+    [
+      306,
+      318,
+      330
+    ],
+    [
+      330,
+      343,
+      355
+    ],
+    [
+      355,
+      368,
+      380
+    ],
+    [
+      380,
+      393,
+      406
+    ],
+    [
+      406,
+      419,
+      431
+    ],
+    [
+      431,
+      444,
+      474
+    ]
+  ],
+  "form_labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "form_details": [
+    {
+      "min_angle": 41.22102544619133,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 48.59496689897312,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 42.541694586007154,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 47.79550697070016,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 43.893197813552035,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 56.69938605363086,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 55.921865340419316,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 51.373576488225595,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 55.610629535150785,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 51.12344841778282,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 58.2967596298353,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 54.3023993289455,
+      "depth_ok": true,
+      "half_rep": false
+    }
+  ],
+  "avg_form_quality": 1.0,
+  "num_frames": 475
+}

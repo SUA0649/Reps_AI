@@ -26,7 +26,7 @@ import argparse
 import json
 import numpy as np
 from pathlib import Path
-from tqdm import tqdm
+from tqdm import tqdm #? What's this 
 
 from cnn_module.keypoint_extractor import KeypointExtractor
 from cnn_module.feature_engineer import FeatureEngineer
@@ -67,7 +67,7 @@ def process_dataset(data_dir, output_dir, target_fps=30):
         raise FileNotFoundError(f"Dataset directory not found: {data_path}")
 
     # Initialize modules
-    extractor = KeypointExtractor(model_complexity=1)
+    extractor = KeypointExtractor()
     feature_eng = FeatureEngineer()
     labeler = AutoLabeler(fps=target_fps)
 
@@ -132,13 +132,21 @@ def process_dataset(data_dir, output_dir, target_fps=30):
 
                 with open(exercise_output / f"{video_name}_labels.json", 'w') as f:
                     # Convert numpy types for JSON serialization
+                    # form_details contains numpy bools from comparisons — must convert
+                    clean_details = []
+                    for detail in labels['form_details']:
+                        clean_details.append({
+                            k: bool(v) if isinstance(v, (bool, np.bool_)) else float(v)
+                            for k, v in detail.items()
+                        })
+
                     serializable_labels = {
                         'exercise_type': labels['exercise_type'],
                         'rep_count': int(labels['rep_count']),
                         'rep_boundaries': [(int(s), int(v), int(e))
                                           for s, v, e in labels['rep_boundaries']],
                         'form_labels': [int(fl) for fl in labels['form_labels']],
-                        'form_details': labels['form_details'],
+                        'form_details': clean_details,
                         'avg_form_quality': float(labels['avg_form_quality']),
                         'num_frames': int(labels['num_frames']),
                     }

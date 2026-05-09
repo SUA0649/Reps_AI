@@ -1,0 +1,24 @@
+{
+  "exercise_type": "hammer_curl",
+  "rep_count": 1,
+  "rep_boundaries": [
+    [
+      0,
+      37,
+      92
+    ]
+  ],
+  "form_labels": [
+    0
+  ],
+  "form_details": [
+    {
+      "min_angle": 8.60226374630871,
+      "depth_ok": true,
+      "half_rep": false,
+      "shoulder_stable": false
+    }
+  ],
+  "avg_form_quality": 0.0,
+  "num_frames": 93
+}

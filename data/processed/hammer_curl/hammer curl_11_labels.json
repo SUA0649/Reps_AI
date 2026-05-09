@@ -1,0 +1,96 @@
+{
+  "exercise_type": "hammer_curl",
+  "rep_count": 7,
+  "rep_boundaries": [
+    [
+      0,
+      18,
+      47
+    ],
+    [
+      47,
+      77,
+      109
+    ],
+    [
+      109,
+      141,
+      177
+    ],
+    [
+      177,
+      213,
+      252
+    ],
+    [
+      252,
+      291,
+      328
+    ],
+    [
+      328,
+      365,
+      402
+    ],
+    [
+      402,
+      439,
+      527
+    ]
+  ],
+  "form_labels": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+  ],
+  "form_details": [
+    {
+      "min_angle": 50.28421899009242,
+      "depth_ok": false,
+      "half_rep": false,
+      "shoulder_stable": true
+    },
+    {
+      "min_angle": 40.43035463015304,
+      "depth_ok": true,
+      "half_rep": false,
+      "shoulder_stable": true
+    },
+    {
+      "min_angle": 31.00006221074892,
+      "depth_ok": true,
+      "half_rep": false,
+      "shoulder_stable": true
+    },
+    {
+      "min_angle": 39.14184133415251,
+      "depth_ok": true,
+      "half_rep": false,
+      "shoulder_stable": true
+    },
+    {
+      "min_angle": 39.55971259893765,
+      "depth_ok": true,
+      "half_rep": false,
+      "shoulder_stable": true
+    },
+    {
+      "min_angle": 35.31423298498518,
+      "depth_ok": true,
+      "half_rep": false,
+      "shoulder_stable": true
+    },
+    {
+      "min_angle": 31.14867030214296,
+      "depth_ok": true,
+      "half_rep": false,
+      "shoulder_stable": false
+    }
+  ],
+  "avg_form_quality": 0.7142857142857143,
+  "num_frames": 528
+}
