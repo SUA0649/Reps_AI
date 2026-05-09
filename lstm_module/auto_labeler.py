@@ -45,8 +45,8 @@ class AutoLabeler:
         },
         'hammer_curl': {
             'primary_angle': 'left_elbow',
-            'min_angle_good': 50,    # Must reach ≤ 50° for full curl
-            'min_angle_bad': 80,     # Partial curl threshold
+            'min_angle_good': 90,    # Must reach ≤ 90° for full curl
+            'min_angle_bad': 110,    # Partial curl threshold
             'shoulder_move_max': 0.05,  # Max shoulder Y movement (normalized)
         },
     }
@@ -160,10 +160,10 @@ class AutoLabeler:
 
             # Exercise-specific checks
             if exercise_type == 'squat':
-                # Check back angle (hip angle as proxy for trunk lean)
+                # Check back angle (hip angle as proxy for torso-to-thigh)
                 hip_idx = angle_names.index('left_hip')
                 hip_angles = rep_features[:, hip_idx]
-                back_ok = np.min(hip_angles) > (180 - rules['back_angle_max'])
+                back_ok = np.min(hip_angles) > 35  # Must not collapse completely
                 detail['back_ok'] = back_ok
                 is_good = depth_ok and back_ok and not half_rep
 
@@ -176,7 +176,7 @@ class AutoLabeler:
                 shoulder_idx = angle_names.index('left_shoulder')
                 shoulder_angles = rep_features[:, shoulder_idx]
                 shoulder_range = np.max(shoulder_angles) - np.min(shoulder_angles)
-                shoulder_ok = shoulder_range < 20  # Less than 20° movement
+                shoulder_ok = shoulder_range < 80  # Less than 80° movement (was 20°, too strict)
                 detail['shoulder_stable'] = shoulder_ok
                 is_good = depth_ok and shoulder_ok and not half_rep
 

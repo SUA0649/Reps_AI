@@ -1,35 +1,40 @@
 {
   "exercise_type": "hammer_curl",
-  "rep_count": 6,
+  "rep_count": 7,
   "rep_boundaries": [
     [
       0,
-      13,
-      26
+      12,
+      25
     ],
     [
-      26,
-      40,
-      63
+      25,
+      39,
+      60
     ],
     [
-      63,
-      87,
-      125
+      60,
+      81,
+      110
     ],
     [
-      125,
-      164,
-      192
+      110,
+      139,
+      153
     ],
     [
-      192,
-      220,
-      256
+      153,
+      167,
+      194
     ],
     [
-      256,
-      293,
+      194,
+      222,
+      258
+    ],
+    [
+      258,
+      294,
       302
     ]
   ],
@@ -39,46 +44,53 @@
     1,
     0,
     1,
-    1
+    0,
+    0
   ],
   "form_details": [
     {
-      "min_angle": 116.98626214633806,
+      "min_angle": 90.01922193997649,
       "depth_ok": false,
-      "half_rep": true,
+      "half_rep": false,
       "shoulder_stable": true
     },
     {
-      "min_angle": 125.27849224727392,
+      "min_angle": 95.57416826684104,
       "depth_ok": false,
-      "half_rep": true,
+      "half_rep": false,
       "shoulder_stable": true
     },
     {
-      "min_angle": 8.439648096772371,
+      "min_angle": 75.25681316148939,
       "depth_ok": true,
       "half_rep": false,
       "shoulder_stable": true
     },
     {
-      "min_angle": 107.33357332942421,
+      "min_angle": 95.13660302255164,
       "depth_ok": false,
-      "half_rep": true,
+      "half_rep": false,
       "shoulder_stable": true
     },
     {
-      "min_angle": 20.36205351402025,
+      "min_angle": 87.87267913283442,
       "depth_ok": true,
       "half_rep": false,
       "shoulder_stable": true
     },
     {
-      "min_angle": 40.916339454749256,
-      "depth_ok": true,
+      "min_angle": 96.9038810448393,
+      "depth_ok": false,
+      "half_rep": false,
+      "shoulder_stable": true
+    },
+    {
+      "min_angle": 94.49885540393608,
+      "depth_ok": false,
       "half_rep": false,
       "shoulder_stable": true
     }
   ],
-  "avg_form_quality": 0.5,
+  "avg_form_quality": 0.2857142857142857,
   "num_frames": 303
 }

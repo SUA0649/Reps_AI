@@ -4,33 +4,33 @@
   "rep_boundaries": [
     [
       0,
-      39,
-      75
+      34,
+      73
     ],
     [
-      75,
-      111,
+      73,
+      113,
       142
     ]
   ],
   "form_labels": [
-    0,
-    0
+    1,
+    1
   ],
   "form_details": [
     {
-      "min_angle": 159.3801963608111,
-      "depth_ok": false,
-      "half_rep": true,
+      "min_angle": 60.138622240404935,
+      "depth_ok": true,
+      "half_rep": false,
       "back_ok": true
     },
     {
-      "min_angle": 157.92163619337458,
-      "depth_ok": false,
-      "half_rep": true,
+      "min_angle": 62.26514078694055,
+      "depth_ok": true,
+      "half_rep": false,
       "back_ok": true
     }
   ],
-  "avg_form_quality": 0.0,
+  "avg_form_quality": 1.0,
   "num_frames": 143
 }

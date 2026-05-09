@@ -25,17 +25,17 @@
   ],
   "form_details": [
     {
-      "min_angle": 45.994495840854654,
+      "min_angle": 63.972504820490066,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 35.17493017121069,
+      "min_angle": 64.70010173990309,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 62.644385087492054,
+      "min_angle": 66.94948034662895,
       "depth_ok": true,
       "half_rep": false
     }

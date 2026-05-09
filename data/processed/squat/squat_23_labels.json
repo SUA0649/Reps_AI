@@ -4,45 +4,45 @@
   "rep_boundaries": [
     [
       0,
-      123,
-      197
+      96,
+      176
     ],
     [
-      197,
-      272,
-      301
+      176,
+      256,
+      288
     ],
     [
-      301,
-      331,
+      288,
+      321,
       431
     ]
   ],
   "form_labels": [
-    0,
-    0,
-    0
+    1,
+    1,
+    1
   ],
   "form_details": [
     {
-      "min_angle": 20.60066451496881,
+      "min_angle": 37.64087935428327,
       "depth_ok": true,
       "half_rep": false,
-      "back_ok": false
+      "back_ok": true
     },
     {
-      "min_angle": 1.3346345970343456,
+      "min_angle": 11.93632181487053,
       "depth_ok": true,
       "half_rep": false,
-      "back_ok": false
+      "back_ok": true
     },
     {
-      "min_angle": 19.065632259775466,
+      "min_angle": 41.800830472993965,
       "depth_ok": true,
       "half_rep": false,
-      "back_ok": false
+      "back_ok": true
     }
   ],
-  "avg_form_quality": 0.0,
+  "avg_form_quality": 1.0,
   "num_frames": 432
 }

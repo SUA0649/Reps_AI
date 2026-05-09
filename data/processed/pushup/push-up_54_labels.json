@@ -45,56 +45,56 @@
     [
       229,
       246,
-      313
+      312
     ],
     [
-      313,
-      380,
-      399
+      312,
+      379,
+      398
     ],
     [
-      399,
+      398,
       418,
-      435
+      434
     ],
     [
-      435,
-      452,
-      469
+      434,
+      451,
+      468
     ],
     [
-      469,
-      486,
-      503
+      468,
+      485,
+      502
     ],
     [
-      503,
-      521,
-      539
+      502,
+      520,
+      538
     ],
     [
-      539,
-      557,
-      575
+      538,
+      556,
+      574
     ],
     [
-      575,
-      593,
-      612
+      574,
+      592,
+      611
     ],
     [
-      612,
-      631,
-      651
+      611,
+      630,
+      650
     ],
     [
-      651,
+      650,
       671,
       690
     ],
     [
       690,
-      710,
+      709,
       777
     ]
   ],
@@ -121,97 +121,97 @@
   ],
   "form_details": [
     {
-      "min_angle": 57.955136978207605,
+      "min_angle": 71.72951617295212,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 58.96621037384316,
+      "min_angle": 69.58838377669436,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 63.9913460169938,
+      "min_angle": 63.446380854769394,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 53.089207603985244,
+      "min_angle": 61.934474261469234,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 62.175114797405634,
+      "min_angle": 65.52254198596324,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 60.954068896515444,
+      "min_angle": 69.46503972032887,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 58.89034960922636,
+      "min_angle": 70.55280695755678,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 56.82111267612978,
+      "min_angle": 67.98936219503912,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 55.233732301110585,
+      "min_angle": 66.61656584908714,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 36.22333818928835,
+      "min_angle": 76.5260155203418,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 37.88861782057243,
+      "min_angle": 70.3096890092361,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 37.32309682704131,
+      "min_angle": 73.72302840005013,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 38.874053737447966,
+      "min_angle": 73.56133830982593,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 41.20620526886216,
+      "min_angle": 73.9691996586096,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 41.67158249786077,
+      "min_angle": 76.69999802742687,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 39.19955315147044,
+      "min_angle": 72.13617296653278,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 36.99376637952349,
+      "min_angle": 74.22581522829081,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 36.02324284341781,
+      "min_angle": 79.47295252809987,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 35.02847380214764,
+      "min_angle": 74.87082299706694,
       "depth_ok": true,
       "half_rep": false
     }

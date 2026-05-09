@@ -5,11 +5,11 @@
     [
       0,
       56,
-      89
+      86
     ],
     [
-      89,
-      123,
+      86,
+      116,
       149
     ]
   ],
@@ -19,12 +19,12 @@
   ],
   "form_details": [
     {
-      "min_angle": 105.3390494246286,
+      "min_angle": 114.02072034474354,
       "depth_ok": false,
       "half_rep": false
     },
     {
-      "min_angle": 102.60441307166238,
+      "min_angle": 116.5671179500118,
       "depth_ok": false,
       "half_rep": false
     }

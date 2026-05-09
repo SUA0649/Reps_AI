@@ -4,20 +4,20 @@
   "rep_boundaries": [
     [
       0,
-      96,
+      76,
       149
     ]
   ],
   "form_labels": [
-    1
+    0
   ],
   "form_details": [
     {
-      "min_angle": 37.80689464079793,
-      "depth_ok": true,
+      "min_angle": 93.95127408347494,
+      "depth_ok": false,
       "half_rep": false
     }
   ],
-  "avg_form_quality": 1.0,
+  "avg_form_quality": 0.0,
   "num_frames": 150
 }

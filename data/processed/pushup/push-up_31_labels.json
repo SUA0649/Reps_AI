@@ -15,15 +15,15 @@
     [
       60,
       76,
-      92
+      93
     ],
     [
-      92,
-      109,
-      125
+      93,
+      110,
+      126
     ],
     [
-      125,
+      126,
       142,
       149
     ]
@@ -37,27 +37,27 @@
   ],
   "form_details": [
     {
-      "min_angle": 38.53236546693205,
+      "min_angle": 65.88578262380837,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 43.556097177033564,
+      "min_angle": 64.03344307800654,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 44.79532964307756,
+      "min_angle": 61.27373281781603,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 41.929013236185234,
+      "min_angle": 67.79754471139954,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 42.304582305244175,
+      "min_angle": 69.55780874727397,
       "depth_ok": true,
       "half_rep": false
     }

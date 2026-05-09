@@ -1,19 +1,19 @@
 {
   "exercise_type": "pushup",
-  "rep_count": 12,
+  "rep_count": 11,
   "rep_boundaries": [
     [
       0,
       23,
-      54
+      53
     ],
     [
-      54,
-      85,
-      115
+      53,
+      83,
+      114
     ],
     [
-      115,
+      114,
       145,
       169
     ],
@@ -25,15 +25,10 @@
     [
       224,
       255,
-      274
+      286
     ],
     [
-      274,
-      294,
-      306
-    ],
-    [
-      306,
+      286,
       318,
       330
     ],
@@ -45,21 +40,21 @@
     [
       355,
       368,
-      380
+      381
     ],
     [
-      380,
-      393,
+      381,
+      394,
       406
     ],
     [
       406,
-      419,
+      418,
       431
     ],
     [
       431,
-      444,
+      445,
       474
     ]
   ],
@@ -74,67 +69,61 @@
     1,
     1,
     1,
-    1,
     1
   ],
   "form_details": [
     {
-      "min_angle": 41.22102544619133,
+      "min_angle": 85.86985968275143,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 48.59496689897312,
+      "min_angle": 81.8137764305782,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 42.541694586007154,
+      "min_angle": 83.21773626420864,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 47.79550697070016,
+      "min_angle": 85.4722441389185,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 43.893197813552035,
+      "min_angle": 84.52890756695474,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 56.69938605363086,
+      "min_angle": 74.87894543133895,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 55.921865340419316,
+      "min_angle": 83.58360906631466,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 51.373576488225595,
+      "min_angle": 82.55256304373677,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 55.610629535150785,
+      "min_angle": 81.97032308366207,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 51.12344841778282,
+      "min_angle": 83.09454597060504,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 58.2967596298353,
-      "depth_ok": true,
-      "half_rep": false
-    },
-    {
-      "min_angle": 54.3023993289455,
+      "min_angle": 78.80164628138591,
       "depth_ok": true,
       "half_rep": false
     }

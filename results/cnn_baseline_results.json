@@ -1,0 +1,37 @@
+{
+  "method": "CNN-Only (Peak Detection + Angle Threshold)",
+  "per_exercise": {
+    "hammer_curl": {
+      "num_videos": 12,
+      "total_true_reps": 33,
+      "total_pred_reps": 33,
+      "rep_mae": 0.0,
+      "rep_accuracy": 1.0,
+      "form_accuracy": 0.6363636363636364
+    },
+    "pushup": {
+      "num_videos": 56,
+      "total_true_reps": 173,
+      "total_pred_reps": 173,
+      "rep_mae": 0.0,
+      "rep_accuracy": 1.0,
+      "form_accuracy": 0.8959537572254336
+    },
+    "squat": {
+      "num_videos": 23,
+      "total_true_reps": 49,
+      "total_pred_reps": 49,
+      "rep_mae": 0.0,
+      "rep_accuracy": 1.0,
+      "form_accuracy": 0.8571428571428571
+    }
+  },
+  "overall": {
+    "rep_mae": 0.0,
+    "rep_accuracy": 1.0,
+    "form_accuracy": 0.8549019607843137,
+    "total_videos": 91,
+    "total_true_reps": 255,
+    "total_pred_reps": 255
+  }
+}

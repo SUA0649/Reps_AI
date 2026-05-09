@@ -74,9 +74,11 @@ class FeatureEngineer:
         """Compute all 8 joint angles from one frame. Returns dict of angle_name → degrees."""
         angles = {}
         for name, (a_name, b_name, c_name) in self.ANGLE_DEFINITIONS.items():
-            a = landmarks[self.LANDMARKS[a_name], :2]
-            b = landmarks[self.LANDMARKS[b_name], :2]
-            c = landmarks[self.LANDMARKS[c_name], :2]
+            # Use 3D coordinates (x, y, z) instead of 2D for accurate biomechanics
+            # preventing perspective distortion when hip drops below knee in 2D plane
+            a = landmarks[self.LANDMARKS[a_name], :3]
+            b = landmarks[self.LANDMARKS[b_name], :3]
+            c = landmarks[self.LANDMARKS[c_name], :3]
             angles[name] = self.calculate_angle(a, b, c)
         return angles
 

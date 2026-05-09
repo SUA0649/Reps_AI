@@ -5,44 +5,44 @@
     [
       0,
       76,
-      141
+      140
     ],
     [
-      141,
-      207,
-      269
+      140,
+      205,
+      267
     ],
     [
-      269,
-      332,
+      267,
+      329,
       367
     ]
   ],
   "form_labels": [
-    0,
-    0,
-    0
+    1,
+    1,
+    1
   ],
   "form_details": [
     {
-      "min_angle": 30.78639273512497,
+      "min_angle": 34.680799256196835,
       "depth_ok": true,
       "half_rep": false,
-      "back_ok": false
+      "back_ok": true
     },
     {
-      "min_angle": 30.824162008395728,
+      "min_angle": 38.29154087756011,
       "depth_ok": true,
       "half_rep": false,
-      "back_ok": false
+      "back_ok": true
     },
     {
-      "min_angle": 32.588227977066374,
+      "min_angle": 37.94030388953544,
       "depth_ok": true,
       "half_rep": false,
-      "back_ok": false
+      "back_ok": true
     }
   ],
-  "avg_form_quality": 0.0,
+  "avg_form_quality": 1.0,
   "num_frames": 368
 }
