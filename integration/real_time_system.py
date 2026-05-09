@@ -126,10 +126,13 @@ class RealTimeSystem:
         self.prev_rep_pred = rounded_reps
 
         # Update form display
-        if form_prob > 0.7:
+        # Thresholds tuned for real-world (model trained on clean Kaggle videos,
+        # live conditions are noisier so probabilities sit lower)
+        self.current_form_prob = form_prob  # store for overlay display
+        if form_prob > 0.5:
             self.current_form = "GOOD FORM"
             self.form_color = (0, 200, 0)     # Green
-        elif form_prob > 0.4:
+        elif form_prob > 0.3:
             self.current_form = "CHECK FORM"
             self.form_color = (0, 200, 200)   # Yellow
         else:
@@ -153,9 +156,10 @@ class RealTimeSystem:
         cv2.putText(frame, f"Reps: {self.total_reps}",
                     (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 255), 3)
 
-        # Form quality
-        cv2.putText(frame, self.current_form,
-                    (20, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.8, self.form_color, 2)
+        # Form quality + raw probability (for debugging/tuning)
+        form_prob_display = getattr(self, 'current_form_prob', 0.0)
+        cv2.putText(frame, f"{self.current_form} ({form_prob_display:.2f})",
+                    (20, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, self.form_color, 2)
 
         # Primary joint angle
         primary_angle_map = {
