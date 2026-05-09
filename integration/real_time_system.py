@@ -32,7 +32,8 @@ PoseLandmarkerOptions = mp.tasks.vision.PoseLandmarkerOptions
 VisionRunningMode = mp.tasks.vision.RunningMode
 
 # Default model paths
-POSE_MODEL_PATH = str(Path(__file__).parent.parent / 'models' / 'pose_landmarker_heavy.task')
+POSE_MODEL_HEAVY = str(Path(__file__).parent.parent / 'models' / 'pose_landmarker_heavy.task')
+POSE_MODEL_LITE = str(Path(__file__).parent.parent / 'models' / 'pose_landmarker_lite.task')
 
 
 class RealTimeSystem:
@@ -87,9 +88,14 @@ class RealTimeSystem:
         self.fps_times = deque(maxlen=30)
         self._last_landmarks = None
 
-        # LSTM inference throttle: run every N frames to save CPU
+        # LSTM inference throttle
         self._frame_count = 0
-        self._lstm_interval = 15  # Run LSTM every 15 frames (~0.5 sec at 30fps)
+        self._lstm_interval = 15
+
+        # Angle-based rep counter (more reliable than LSTM for counting)
+        self._angle_history = deque(maxlen=90)  # 3 seconds of angle data
+        self._rep_cooldown = 0  # frames to wait after detecting a rep
+        self._prev_angle_state = 'up'  # 'up' or 'down' — tracks rep phases
 
     def _landmarks_to_numpy(self, result):
         """Convert PoseLandmarkerResult to (33, 4) numpy array."""
@@ -187,7 +193,15 @@ class RealTimeSystem:
                 ])
                 self.feature_buffer.append(frame_features)
 
-                # ---- LSTM INFERENCE (throttled) ----
+                # ---- ANGLE-BASED REP COUNTING (reliable) ----
+                primary_map = {'squat': 'left_knee', 'pushup': 'left_elbow',
+                               'hammer_curl': 'left_elbow'}
+                primary_angle_name = primary_map.get(self.exercise_type, 'left_knee')
+                primary_angle = angles.get(primary_angle_name, 180)
+                self._angle_history.append(primary_angle)
+                self._count_rep_by_angle(primary_angle)
+
+                # ---- LSTM INFERENCE for FORM only (throttled) ----
                 self._frame_count += 1
                 if (len(self.feature_buffer) >= self.window_size and
                         self._frame_count % self._lstm_interval == 0):
@@ -226,8 +240,35 @@ class RealTimeSystem:
         cv2.destroyAllWindows()
         print("✅ Session ended")
 
+    def _count_rep_by_angle(self, current_angle):
+        """
+        Count reps using angle state machine (up/down transitions).
+        Much more reliable than LSTM regression for counting.
+
+        A rep = angle goes below threshold (down) then back above (up).
+        """
+        # Thresholds per exercise
+        thresholds = {
+            'squat':       {'down': 120, 'up': 150},  # Knee: <120° = bottom, >150° = standing
+            'pushup':      {'down': 110, 'up': 150},  # Elbow: <110° = bottom, >150° = top
+            'hammer_curl': {'down': 70,  'up': 130},  # Elbow: <70° = curled, >130° = extended
+        }
+        t = thresholds.get(self.exercise_type, {'down': 110, 'up': 150})
+
+        if self._rep_cooldown > 0:
+            self._rep_cooldown -= 1
+            return
+
+        if self._prev_angle_state == 'up' and current_angle < t['down']:
+            self._prev_angle_state = 'down'
+        elif self._prev_angle_state == 'down' and current_angle > t['up']:
+            self._prev_angle_state = 'up'
+            self.total_reps += 1
+            self._rep_cooldown = 10  # Ignore next 10 frames (~0.3s debounce)
+            print(f"\r   Rep #{self.total_reps} detected (angle: {current_angle:.0f}°)", end='')
+
     def _run_lstm_inference(self):
-        """Run LSTM on the current feature buffer."""
+        """Run LSTM — used for FORM prediction only (rep counting uses angle method)."""
         sequence = np.array(list(self.feature_buffer))
         x = torch.FloatTensor(sequence).unsqueeze(0).to(self.device)
 
@@ -237,11 +278,7 @@ class RealTimeSystem:
         rep_count = rep_pred.item()
         form_prob = form_pred.item()
 
-        # Detect new reps
-        rounded_reps = round(rep_count)
-        if rounded_reps > self.prev_rep_pred and rounded_reps > 0:
-            self.total_reps += (rounded_reps - self.prev_rep_pred)
-        self.prev_rep_pred = rounded_reps
+        # (Rep counting now handled by _count_rep_by_angle — LSTM used for form only)
 
         # Update form display
         # Thresholds tuned for real-world (model trained on clean Kaggle videos,
@@ -337,12 +374,22 @@ if __name__ == "__main__":
     parser.add_argument('--exercise', type=str, default='squat',
                         choices=['squat', 'pushup', 'hammer_curl'])
     parser.add_argument('--pose_model', type=str, default=None,
-                        help='Path to MediaPipe .task model (default: models/pose_landmarker_heavy.task)')
+                        help='Path to MediaPipe .task model')
+    parser.add_argument('--lite', action='store_true',
+                        help='Use lite pose model for better FPS (~15-20 FPS vs ~9 FPS)')
     args = parser.parse_args()
+
+    # Choose pose model
+    if args.pose_model:
+        pose_path = args.pose_model
+    elif args.lite:
+        pose_path = POSE_MODEL_LITE
+    else:
+        pose_path = POSE_MODEL_HEAVY
 
     system = RealTimeSystem(
         lstm_model_path=args.model,
         exercise_type=args.exercise,
-        pose_model_path=args.pose_model,
+        pose_model_path=pose_path,
     )
     system.run()
