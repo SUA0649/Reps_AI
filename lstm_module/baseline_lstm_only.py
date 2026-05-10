@@ -4,15 +4,6 @@ LSTM-Only Baseline (Abdul Rehman)
 BASELINE 2: Skip MediaPipe entirely.
 Feed raw flattened frame pixels (64×64 grayscale = 4096 features) directly to LSTM.
 
-PURPOSE (for viva):
-  This baseline shows WHY we need structured keypoint features.
-  Without MediaPipe extracting spatial structure (joint angles, normalized coords),
-  the LSTM is forced to learn pose estimation AND rep counting simultaneously
-  from raw pixels — an extremely hard task with a tiny dataset.
-
-  Expected result: TERRIBLE accuracy (~30-40% rep, ~50% form)
-  This PROVES that the CNN → Feature Engineering → LSTM pipeline adds real value.
-
 Usage:
   python -m lstm_module.baseline_lstm_only --data_dir data/processed --epochs 50
 """

@@ -15,9 +15,6 @@ BIOMECHANICAL RULES (for viva — cite NSCA guidelines):
   Push-up:
     Good: elbow ≤ 90°, hip sag ≤ 10°, full extension at top
     Bad:  elbow > 120° (half rep), hip sag > 20°
-  Hammer Curl:
-    Good: elbow ≤ 40° (full curl), shoulder stable, elbow near torso
-    Bad:  elbow > 80° (partial), shoulder shrug > 5%, body sway
 """
 
 import numpy as np

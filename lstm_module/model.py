@@ -5,13 +5,7 @@ Two prediction heads sharing the same LSTM backbone:
   Head 1 (Rep Counter): Regression → predicts # of reps in window
   Head 2 (Form Classifier): Binary classification → good/bad form
 
-LSTM INTERNALS (for viva):
-  Each LSTM cell has 3 gates:
-    - Forget gate: decides what info to DISCARD from cell state
-    - Input gate:  decides what NEW info to STORE in cell state
-    - Output gate: decides what to OUTPUT based on cell state
-  Cell state = long-term memory highway (solves vanishing gradient)
-  Hidden state = short-term working memory (used for predictions)
+
 """
 
 import torch

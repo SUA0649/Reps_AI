@@ -11,8 +11,8 @@ from cnn_module.keypoint_extractor import KeypointExtractor
 
 # ==========================================
 # USER: UPDATE THESE PATHS!
-COCO_VAL_JSON = "REPLACE_WITH_PATH_TO_person_keypoints_val2017.json"
-COCO_VAL_IMAGES = "REPLACE_WITH_PATH_TO_val2017_IMAGES"
+COCO_VAL_JSON = "/Users/shaheeruddinahmed/Downloads/coco2017/annotations/person_keypoints_val2017.json"
+COCO_VAL_IMAGES = "/Users/shaheeruddinahmed/Downloads/coco2017/val2017"
 # ==========================================
 
 def evaluate_coco(json_path, images_dir, max_samples=500):

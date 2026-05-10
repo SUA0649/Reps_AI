@@ -6,10 +6,6 @@ Creates sliding window samples from processed video features.
 Each sample = 60 frames (2 seconds at 30fps) of feature vectors,
 labeled with rep count and form quality.
 
-DATA AUGMENTATION (for viva):
-  - Speed jitter: randomly stretch/compress sequences (0.8x-1.2x)
-  - Gaussian noise: add small noise to features (simulates sensor jitter)
-  These increase effective dataset size without recording more videos.
 """
 
 import torch

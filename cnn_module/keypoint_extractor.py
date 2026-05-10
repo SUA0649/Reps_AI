@@ -4,17 +4,7 @@ Keypoint Extraction Module using MediaPipe Pose (Shaheer)
 Wraps Google's MediaPipe PoseLandmarker (Tasks API) to extract 33 body
 landmarks from video frames. Each landmark has (x, y, z, visibility).
 
-HOW MediaPipe WORKS (for viva):
-  - Uses a MobileNetV2 backbone (CNN) for feature extraction
-  - BlazePose architecture: detector finds person, then landmark model predicts 33 points
-  - Trained on a large proprietary dataset of human poses
-  - Runs on CPU at 30+ FPS — no GPU needed for inference
 
-IMPORTANT: This uses the NEW MediaPipe Tasks API (v0.10.35+).
-  - The old `mp.solutions.pose` API has been removed.
-  - You must download the model file:
-    curl -L -o models/pose_landmarker_heavy.task \\
-      https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/latest/pose_landmarker_heavy.task
 
 MediaPipe Pose Landmarks (33 total):
   0: nose

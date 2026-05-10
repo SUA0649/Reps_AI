@@ -1,0 +1,18 @@
+{
+  "pullup": {
+    "videos": 12,
+    "processed": 12,
+    "failed": 0,
+    "total_pred_reps": 32,
+    "avg_form_score": 0.684687283852448,
+    "good_form_rate": 0.75
+  },
+  "pushup": {
+    "videos": 13,
+    "processed": 13,
+    "failed": 0,
+    "total_pred_reps": 23,
+    "avg_form_score": 0.7186157591640949,
+    "good_form_rate": 0.75
+  }
+}

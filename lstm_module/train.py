@@ -3,13 +3,6 @@ LSTM Training Script (Abdul Rehman)
 ====================================
 Trains the dual-head ExerciseLSTM with early stopping.
 
-TRAINING CONCEPTS (for viva):
-  - Loss = MSE(rep_count) + λ * BCE(form_quality)
-  - MSE (Mean Squared Error): for regression tasks (rep counting)
-  - BCE (Binary Cross-Entropy): for classification tasks (form quality)
-  - Early stopping: stop training when validation loss stops improving
-  - This prevents overfitting (memorizing training data instead of learning patterns)
-
 Usage:
   python -m lstm_module.train --data_dir data/processed --epochs 100
 """
