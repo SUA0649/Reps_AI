@@ -4,22 +4,22 @@
   "rep_boundaries": [
     [
       0,
-      21,
-      33
+      23,
+      40
     ],
     [
-      33,
-      45,
-      68
+      40,
+      58,
+      75
     ],
     [
-      68,
+      75,
       92,
       105
     ],
     [
       105,
-      118,
+      119,
       136
     ],
     [
@@ -29,24 +29,24 @@
     ],
     [
       223,
-      292,
-      309
+      293,
+      311
     ],
     [
-      309,
-      326,
-      355
+      311,
+      329,
+      359
     ],
     [
-      355,
-      385,
+      359,
+      390,
       410
     ]
   ],
   "form_labels": [
+    1,
     0,
-    0,
-    0,
+    1,
     1,
     1,
     0,
@@ -55,46 +55,46 @@
   ],
   "form_details": [
     {
-      "min_angle": 99.3035142890328,
-      "depth_ok": false,
-      "half_rep": false
-    },
-    {
-      "min_angle": 91.15660467673695,
-      "depth_ok": false,
-      "half_rep": false
-    },
-    {
-      "min_angle": 91.5828031925089,
-      "depth_ok": false,
-      "half_rep": false
-    },
-    {
-      "min_angle": 87.34790507778585,
+      "min_angle": 80.4057198248903,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 73.47677652313149,
-      "depth_ok": true,
-      "half_rep": false
-    },
-    {
-      "min_angle": 116.89040175049148,
+      "min_angle": 91.55332335432732,
       "depth_ok": false,
       "half_rep": false
     },
     {
-      "min_angle": 88.08463213360895,
+      "min_angle": 84.727871800197,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 85.6769436676334,
+      "min_angle": 83.62666235237512,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 85.69530032751605,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 110.65180727428101,
+      "depth_ok": false,
+      "half_rep": false
+    },
+    {
+      "min_angle": 83.97047294172812,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 86.39019686868001,
       "depth_ok": true,
       "half_rep": false
     }
   ],
-  "avg_form_quality": 0.5,
+  "avg_form_quality": 0.75,
   "num_frames": 411
 }

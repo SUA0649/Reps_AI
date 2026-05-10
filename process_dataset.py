@@ -43,31 +43,47 @@ EXERCISE_NAME_MAP = {
     'pushups': 'pushup',
     'push-ups': 'pushup',
     'push_ups': 'pushup',
-    'hammer_curl': 'hammer_curl',
-    'hammer-curl': 'hammer_curl',
-    'hammercurl': 'hammer_curl',
-    'hammer_curls': 'hammer_curl',
-    'hammer curl': 'hammer_curl',
+    'pullup': 'pullup',
+    'pull-up': 'pullup',
+    'pull_up': 'pullup',
+    'pullups': 'pullup',
+    'pull-ups': 'pullup',
+    'pull_ups': 'pullup',
+    'pull up': 'pullup',
+    'pull ups': 'pullup',
+    'plank': 'plank',
+    'planks': 'plank',
 }
 
 
-def process_dataset(data_dir, output_dir, target_fps=30):
+def process_dataset(data_dir, output_dir, target_fps=30, model_type='heavy'):
     """
     Process the entire Kaggle exercise video dataset.
 
     Args:
-        data_dir: path to kaggle_exercise_videos/
-        output_dir: path to data/processed/
-        target_fps: standardize all videos to this FPS
+        data_dir: Path to raw video dataset
+        output_dir: Path to save processed features and labels
+        target_fps: Standardized frame rate
+        model_type: 'heavy', 'lite', or 'full'
     """
     data_path = Path(data_dir)
     output_path = Path(output_dir)
 
     if not data_path.exists():
-        raise FileNotFoundError(f"Dataset directory not found: {data_path}")
+        print(f"❌ Data directory not found: {data_path}")
+        return
+
+    output_path.mkdir(parents=True, exist_ok=True)
 
     # Initialize modules
-    extractor = KeypointExtractor()
+    if model_type == 'lite':
+        model_path = str(Path(__file__).parent / 'models' / 'pose_landmarker_lite.task')
+        extractor = KeypointExtractor(model_path=model_path)
+    elif model_type == 'full':
+        model_path = str(Path(__file__).parent / 'models' / 'pose_landmarker_full.task')
+        extractor = KeypointExtractor(model_path=model_path)
+    else:
+        extractor = KeypointExtractor()
     feature_eng = FeatureEngineer()
     labeler = AutoLabeler(fps=target_fps)
 
@@ -195,6 +211,16 @@ if __name__ == "__main__":
                         help='Output directory for processed data')
     parser.add_argument('--fps', type=int, default=30,
                         help='Target FPS for standardization')
+    parser.add_argument('--lite', action='store_true',
+                        help='Use lite pose model for extraction')
+    parser.add_argument('--full', action='store_true',
+                        help='Use full pose model for extraction')
     args = parser.parse_args()
 
-    process_dataset(args.data_dir, args.output_dir, target_fps=args.fps)
+    model_type = 'heavy'
+    if args.lite:
+        model_type = 'lite'
+    elif args.full:
+        model_type = 'full'
+
+    process_dataset(args.data_dir, args.output_dir, target_fps=args.fps, model_type=model_type)

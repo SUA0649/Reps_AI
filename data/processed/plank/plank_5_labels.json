@@ -1,0 +1,23 @@
+{
+  "exercise_type": "plank",
+  "rep_count": 1,
+  "rep_boundaries": [
+    [
+      0,
+      52,
+      751
+    ]
+  ],
+  "form_labels": [
+    1
+  ],
+  "form_details": [
+    {
+      "min_angle": 98.83292959156056,
+      "depth_ok": true,
+      "half_rep": false
+    }
+  ],
+  "avg_form_quality": 1.0,
+  "num_frames": 752
+}

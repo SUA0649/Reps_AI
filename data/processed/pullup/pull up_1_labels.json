@@ -1,0 +1,100 @@
+{
+  "exercise_type": "pullup",
+  "rep_count": 8,
+  "rep_boundaries": [
+    [
+      0,
+      97,
+      123
+    ],
+    [
+      123,
+      150,
+      177
+    ],
+    [
+      177,
+      204,
+      230
+    ],
+    [
+      230,
+      256,
+      284
+    ],
+    [
+      284,
+      312,
+      340
+    ],
+    [
+      340,
+      368,
+      396
+    ],
+    [
+      396,
+      425,
+      455
+    ],
+    [
+      455,
+      486,
+      525
+    ]
+  ],
+  "form_labels": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "form_details": [
+    {
+      "min_angle": 93.99067787631962,
+      "depth_ok": false,
+      "half_rep": false
+    },
+    {
+      "min_angle": 98.93536430653924,
+      "depth_ok": false,
+      "half_rep": false
+    },
+    {
+      "min_angle": 100.48366498070732,
+      "depth_ok": false,
+      "half_rep": true
+    },
+    {
+      "min_angle": 96.05796357961867,
+      "depth_ok": false,
+      "half_rep": false
+    },
+    {
+      "min_angle": 100.59119272762939,
+      "depth_ok": false,
+      "half_rep": true
+    },
+    {
+      "min_angle": 97.39059986426852,
+      "depth_ok": false,
+      "half_rep": false
+    },
+    {
+      "min_angle": 105.02685662079979,
+      "depth_ok": false,
+      "half_rep": true
+    },
+    {
+      "min_angle": 101.17125597877207,
+      "depth_ok": false,
+      "half_rep": true
+    }
+  ],
+  "avg_form_quality": 0.0,
+  "num_frames": 526
+}

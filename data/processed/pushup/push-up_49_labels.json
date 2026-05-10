@@ -1,34 +1,45 @@
 {
   "exercise_type": "pushup",
-  "rep_count": 2,
+  "rep_count": 3,
   "rep_boundaries": [
     [
       0,
-      64,
-      93
+      6,
+      33
     ],
     [
-      93,
-      123,
+      33,
+      60,
+      90
+    ],
+    [
+      90,
+      121,
       149
     ]
   ],
   "form_labels": [
-    1,
-    1
+    0,
+    0,
+    0
   ],
   "form_details": [
     {
-      "min_angle": 81.81959578418704,
-      "depth_ok": true,
+      "min_angle": 102.49841944517811,
+      "depth_ok": false,
       "half_rep": false
     },
     {
-      "min_angle": 87.06066378976863,
-      "depth_ok": true,
+      "min_angle": 101.8098980427215,
+      "depth_ok": false,
+      "half_rep": false
+    },
+    {
+      "min_angle": 114.25832425386947,
+      "depth_ok": false,
       "half_rep": false
     }
   ],
-  "avg_form_quality": 1.0,
+  "avg_form_quality": 0.0,
   "num_frames": 150
 }

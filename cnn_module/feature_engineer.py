@@ -122,12 +122,22 @@ class FeatureEngineer:
         """
         num_frames = keypoint_sequence.shape[0]
         all_features = []
+        
+        # Create a mutable copy to freeze occluded joints
+        seq_clean = keypoint_sequence.copy()
 
         for i in range(num_frames):
-            frame = keypoint_sequence[i]
+            frame = seq_clean[i]
+            
+            # Visibility freezing: If confidence < 0.5, use the last known good position
+            if i > 0:
+                for j in range(33):
+                    if frame[j, 3] < 0.5:
+                        frame[j] = seq_clean[i-1, j]
+                        
             angles = list(self.compute_angles(frame).values())
             coords = self.compute_normalized_coords(frame)
-            velocities = (self.compute_velocities(frame, keypoint_sequence[i-1])
+            velocities = (self.compute_velocities(frame, seq_clean[i-1])
                          if i > 0 else np.zeros(self.num_velocity_features))
 
             all_features.append(np.concatenate([angles, coords, velocities]))
@@ -139,7 +149,8 @@ class FeatureEngineer:
         primary = {
             'squat': 'left_knee',
             'pushup': 'left_elbow',
-            'hammer_curl': 'left_elbow',
+            'pullup': 'left_elbow',
+            'plank': 'left_hip',
         }
         idx = angle_names.index(primary.get(exercise_type, 'left_knee'))
         return features[:, idx]

@@ -1,70 +1,75 @@
 {
   "exercise_type": "pushup",
-  "rep_count": 13,
+  "rep_count": 14,
   "rep_boundaries": [
     [
       0,
-      37,
-      69
+      32,
+      68
     ],
     [
-      69,
-      102,
-      140
+      68,
+      104,
+      139
     ],
     [
-      140,
-      179,
-      194
+      139,
+      175,
+      192
     ],
     [
-      194,
+      192,
       210,
       229
     ],
     [
       229,
-      249,
-      269
+      248,
+      268
     ],
     [
-      269,
-      290,
-      311
+      268,
+      289,
+      310
     ],
     [
-      311,
-      333,
-      352
+      310,
+      332,
+      351
     ],
     [
-      352,
+      351,
       371,
       386
     ],
     [
       386,
-      401,
-      427
+      402,
+      428
     ],
     [
-      427,
+      428,
       454,
       481
     ],
     [
       481,
-      508,
-      553
+      509,
+      525
     ],
     [
-      553,
-      598,
-      620
+      525,
+      541,
+      569
     ],
     [
-      620,
-      642,
+      569,
+      597,
+      619
+    ],
+    [
+      619,
+      641,
       662
     ]
   ],
@@ -80,76 +85,82 @@
     1,
     1,
     1,
+    0,
     1,
     1
   ],
   "form_details": [
     {
-      "min_angle": 63.053395487418385,
+      "min_angle": 50.96721099555292,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 53.668742903860874,
+      "min_angle": 46.06392954690287,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 53.57354601276345,
+      "min_angle": 41.50299442329596,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 82.17119430467247,
+      "min_angle": 74.52087812280979,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 73.44521781297766,
+      "min_angle": 60.539428065929364,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 66.19282766347219,
+      "min_angle": 53.36054252868279,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 66.14157537654202,
+      "min_angle": 61.935860463319344,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 66.70061133807809,
+      "min_angle": 63.906726732806106,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 73.32165179777235,
+      "min_angle": 66.19156821199279,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 74.48381660137196,
+      "min_angle": 69.15399633641601,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 71.87385440438275,
+      "min_angle": 68.21826900173004,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 70.62338975876267,
+      "min_angle": 133.84079760038387,
+      "depth_ok": false,
+      "half_rep": true
+    },
+    {
+      "min_angle": 74.56901630503472,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 73.72610909693964,
+      "min_angle": 76.35101313291523,
       "depth_ok": true,
       "half_rep": false
     }
   ],
-  "avg_form_quality": 1.0,
+  "avg_form_quality": 0.9285714285714286,
   "num_frames": 663
 }

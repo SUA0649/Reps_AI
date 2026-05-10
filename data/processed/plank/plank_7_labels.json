@@ -1,0 +1,166 @@
+{
+  "exercise_type": "plank",
+  "rep_count": 14,
+  "rep_boundaries": [
+    [
+      0,
+      208,
+      278
+    ],
+    [
+      278,
+      348,
+      481
+    ],
+    [
+      481,
+      615,
+      705
+    ],
+    [
+      705,
+      795,
+      1363
+    ],
+    [
+      1363,
+      1932,
+      2339
+    ],
+    [
+      2339,
+      2747,
+      2938
+    ],
+    [
+      2938,
+      3129,
+      3190
+    ],
+    [
+      3190,
+      3252,
+      3320
+    ],
+    [
+      3320,
+      3388,
+      3628
+    ],
+    [
+      3628,
+      3868,
+      3948
+    ],
+    [
+      3948,
+      4029,
+      4161
+    ],
+    [
+      4161,
+      4293,
+      4756
+    ],
+    [
+      4756,
+      5219,
+      5408
+    ],
+    [
+      5408,
+      5597,
+      6839
+    ]
+  ],
+  "form_labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "form_details": [
+    {
+      "min_angle": 98.42171226131136,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 103.71948882837157,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 67.81029513450422,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 74.87881080834582,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 99.87033884168508,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 99.15372706018589,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 77.45607303895616,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 113.31650968132149,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 47.978518874070254,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 72.0566656383149,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 96.94007305346581,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 100.2179008521901,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 106.18188386981632,
+      "depth_ok": true,
+      "half_rep": false
+    },
+    {
+      "min_angle": 86.45180201345325,
+      "depth_ok": true,
+      "half_rep": false
+    }
+  ],
+  "avg_form_quality": 1.0,
+  "num_frames": 6840
+}

@@ -81,23 +81,28 @@ class RealTimeSystem:
 
         # Rolling buffer for frame features
         self.feature_buffer = deque(maxlen=window_size)
+        self._last_landmarks = None
 
-        # State tracking
+        # Tracking state
         self.total_reps = 0
-        self.current_form = "Warming up..."
-        self.form_color = (200, 200, 200)
         self.prev_rep_pred = 0
+        self.current_form = "UNKNOWN"
+        self.form_color = (150, 150, 150)
+        self._rep_cooldown = 0
+        self._prev_angle_state = 'up'
+        
+        # Plank specific tracking
+        self.plank_timer_active = False
+        self.plank_start_time = 0
+        self.plank_accumulated_time = 0
+
+        # FPS tracking
         self.fps_times = deque(maxlen=30)
         self._last_landmarks = None
 
         # LSTM inference throttle
         self._frame_count = 0
         self._lstm_interval = 15
-
-        # Angle-based rep counter (more reliable than LSTM for counting)
-        self._angle_history = deque(maxlen=90)  # 3 seconds of angle data
-        self._rep_cooldown = 0  # frames to wait after detecting a rep
-        self._prev_angle_state = 'up'  # 'up' or 'down' — tracks rep phases
 
     def _landmarks_to_numpy(self, result):
         """Convert PoseLandmarkerResult to (33, 4) numpy array."""
@@ -136,7 +141,6 @@ class RealTimeSystem:
         print("   Press 'q' to quit, 'r' to reset reps, 'e' to switch exercise")
 
         # Create ONE persistent PoseLandmarker in VIDEO mode
-        # This is the key optimization — no per-frame model loading
         options = PoseLandmarkerOptions(
             base_options=BaseOptions(model_asset_path=self.pose_model_path),
             running_mode=VisionRunningMode.VIDEO,
@@ -175,6 +179,12 @@ class RealTimeSystem:
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
                     continue
+                    
+                # ---- VISIBILITY FILTERING ----
+                if self._last_landmarks is not None:
+                    for j in range(33):
+                        if landmarks[j, 3] < 0.5:
+                            landmarks[j] = self._last_landmarks[j]
 
                 # ---- DRAW SKELETON ----
                 annotated = self._draw_skeleton(frame, landmarks)
@@ -199,17 +209,41 @@ class RealTimeSystem:
 
                 # ---- ANGLE-BASED REP COUNTING (reliable) ----
                 primary_map = {'squat': 'left_knee', 'pushup': 'left_elbow',
-                               'hammer_curl': 'left_elbow'}
+                               'pullup': 'left_elbow', 'plank': 'left_hip'}
                 primary_angle_name = primary_map.get(self.exercise_type, 'left_knee')
                 primary_angle = angles.get(primary_angle_name, 180)
-                self._angle_history.append(primary_angle)
-                self._count_rep_by_angle(primary_angle)
+                
+                # Pull-ups: average both elbows (MediaPipe flips L/R when viewed from behind)
+                if self.exercise_type == 'pullup':
+                    left_elbow = angles.get('left_elbow', 180)
+                    right_elbow = angles.get('right_elbow', 180)
+                    primary_angle = (left_elbow + right_elbow) / 2.0
+                
+                if self.exercise_type == 'plank':
+                    # Plank: pure angle-based form (no LSTM — it's isometric)
+                    hip_angle = angles.get('left_hip', 180)
+                    if hip_angle > 150:
+                        self.current_form = "GOOD FORM"
+                        self.form_color = (0, 255, 0)
+                        self.current_form_prob = hip_angle / 180.0
+                        if not self.plank_timer_active:
+                            self.plank_timer_active = True
+                            self.plank_start_time = time.time()
+                    else:
+                        self.current_form = "BAD FORM"
+                        self.form_color = (0, 0, 200)
+                        self.current_form_prob = hip_angle / 180.0
+                        if self.plank_timer_active:
+                            self.plank_accumulated_time += time.time() - self.plank_start_time
+                            self.plank_timer_active = False
+                else:
+                    self._count_rep_by_angle(primary_angle)
 
-                # ---- LSTM INFERENCE for FORM only (throttled) ----
-                self._frame_count += 1
-                if (len(self.feature_buffer) >= self.window_size and
-                        self._frame_count % self._lstm_interval == 0):
-                    self._run_lstm_inference()
+                    # ---- LSTM INFERENCE for FORM only (throttled) ----
+                    self._frame_count += 1
+                    if (len(self.feature_buffer) >= self.window_size and
+                            self._frame_count % self._lstm_interval == 0):
+                        self._run_lstm_inference()
 
                 # ---- DRAW OVERLAY ----
                 annotated = self._draw_overlay(annotated, angles)
@@ -226,15 +260,19 @@ class RealTimeSystem:
                     break
                 elif key == ord('r'):
                     self.total_reps = 0
+                    self.plank_accumulated_time = 0
+                    self.plank_timer_active = False
                     self.prev_rep_pred = 0
                     self.feature_buffer.clear()
                     self._last_landmarks = None
-                    print("🔄 Rep count reset")
+                    print("🔄 Rep count/Timer reset")
                 elif key == ord('e'):
-                    exercises = ['squat', 'pushup', 'hammer_curl']
+                    exercises = ['squat', 'pushup', 'pullup', 'plank']
                     idx = exercises.index(self.exercise_type)
-                    self.exercise_type = exercises[(idx + 1) % 3]
+                    self.exercise_type = exercises[(idx + 1) % 4]
                     self.total_reps = 0
+                    self.plank_accumulated_time = 0
+                    self.plank_timer_active = False
                     self.prev_rep_pred = 0
                     self.feature_buffer.clear()
                     self._last_landmarks = None
@@ -245,17 +283,11 @@ class RealTimeSystem:
         print("✅ Session ended")
 
     def _count_rep_by_angle(self, current_angle):
-        """
-        Count reps using angle state machine (up/down transitions).
-        Much more reliable than LSTM regression for counting.
-
-        A rep = angle goes below threshold (down) then back above (up).
-        """
-        # Thresholds per exercise
+        """Count reps using angle state machine."""
         thresholds = {
-            'squat':       {'down': 120, 'up': 150},  # Knee: <120° = bottom, >150° = standing
-            'pushup':      {'down': 110, 'up': 150},  # Elbow: <110° = bottom, >150° = top
-            'hammer_curl': {'down': 70,  'up': 130},  # Elbow: <70° = curled, >130° = extended
+            'squat':       {'down': 120, 'up': 150},
+            'pushup':      {'down': 110, 'up': 150},
+            'pullup':      {'down': 100, 'up': 130},  # Relaxed: rear-view angles don't swing as wide
         }
         t = thresholds.get(self.exercise_type, {'down': 110, 'up': 150})
 
@@ -268,32 +300,34 @@ class RealTimeSystem:
         elif self._prev_angle_state == 'down' and current_angle > t['up']:
             self._prev_angle_state = 'up'
             self.total_reps += 1
-            self._rep_cooldown = 10  # Ignore next 10 frames (~0.3s debounce)
-            print(f"\r   Rep #{self.total_reps} detected (angle: {current_angle:.0f}°)", end='')
+            self._rep_cooldown = 10
+            print(f"\r   Rep #{self.total_reps} detected", end='')
 
     def _run_lstm_inference(self):
-        """Run LSTM — used for FORM prediction only (rep counting uses angle method)."""
+        """Run LSTM for form prediction and plank timing."""
         sequence = np.array(list(self.feature_buffer))
         x = torch.FloatTensor(sequence).unsqueeze(0).to(self.device)
 
         with torch.no_grad():
             rep_pred, form_pred = self.model(x)
 
-        rep_count = rep_pred.item()
         form_prob = form_pred.item()
+        self.current_form_prob = form_prob
+        
+        # Plank Timer Logic
+        if self.exercise_type == 'plank':
+            if form_prob > 0.5:
+                if not self.plank_timer_active:
+                    self.plank_timer_active = True
+                    self.plank_start_time = time.time()
+            else:
+                if self.plank_timer_active:
+                    self.plank_accumulated_time += time.time() - self.plank_start_time
+                    self.plank_timer_active = False
 
-        # (Rep counting now handled by _count_rep_by_angle — LSTM used for form only)
-
-        # Update form display
-        # Thresholds tuned for real-world (model trained on clean Kaggle videos,
-        # live conditions are noisier so probabilities sit lower)
-        self.current_form_prob = form_prob  # store for overlay display
         if form_prob > 0.5:
             self.current_form = "GOOD FORM"
-            self.form_color = (0, 200, 0)     # Green
-        elif form_prob > 0.3:
-            self.current_form = "CHECK FORM"
-            self.form_color = (0, 200, 200)
+            self.form_color = (0, 255, 0)
         else:
             self.current_form = "BAD FORM"
             self.form_color = (0, 0, 200)
@@ -338,9 +372,16 @@ class RealTimeSystem:
         cv2.putText(frame, f"Exercise: {self.exercise_type.upper()}",
                     (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
 
-        # Rep counter
-        cv2.putText(frame, f"Reps: {self.total_reps}",
-                    (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 255), 3)
+        # Rep counter / Plank Timer
+        if self.exercise_type == 'plank':
+            current_plank_time = self.plank_accumulated_time
+            if self.plank_timer_active:
+                current_plank_time += time.time() - self.plank_start_time
+            cv2.putText(frame, f"Time: {current_plank_time:.1f}s",
+                        (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 255), 3)
+        else:
+            cv2.putText(frame, f"Reps: {self.total_reps}",
+                        (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 255), 3)
 
         # Form quality + raw probability (for debugging/tuning)
         form_prob_display = getattr(self, 'current_form_prob', 0.0)
@@ -349,7 +390,7 @@ class RealTimeSystem:
 
         # Primary joint angle
         primary_map = {'squat': 'left_knee', 'pushup': 'left_elbow',
-                       'hammer_curl': 'left_elbow'}
+                       'pullup': 'left_elbow', 'plank': 'left_hip'}
         primary = primary_map.get(self.exercise_type, 'left_knee')
         angle_val = angles.get(primary, 0)
         cv2.putText(frame, f"Angle: {angle_val:.0f} deg",
@@ -376,11 +417,13 @@ if __name__ == "__main__":
     parser.add_argument('--model', type=str, default='models/lstm_best.pth',
                         help='Path to trained LSTM model')
     parser.add_argument('--exercise', type=str, default='squat',
-                        choices=['squat', 'pushup', 'hammer_curl'])
+                        choices=['squat', 'pushup', 'pullup', 'plank'])
     parser.add_argument('--pose_model', type=str, default=None,
                         help='Path to MediaPipe .task model')
     parser.add_argument('--lite', action='store_true',
                         help='Use lite pose model for better FPS (~15-20 FPS vs ~9 FPS)')
+    parser.add_argument('--full', action='store_true',
+                        help='Use full pose model (balance between lite and heavy)')
     parser.add_argument('--input', type=str, default='0',
                         help='Video input source (0 for webcam, or path to video file)')
     args = parser.parse_args()
@@ -389,9 +432,11 @@ if __name__ == "__main__":
     if args.pose_model:
         pose_path = args.pose_model
     elif args.lite:
-        pose_path = POSE_MODEL_LITE
+        pose_path = str(Path(__file__).parent.parent / 'models' / 'pose_landmarker_lite.task')
+    elif args.full:
+        pose_path = str(Path(__file__).parent.parent / 'models' / 'pose_landmarker_full.task')
     else:
-        pose_path = POSE_MODEL_HEAVY
+        pose_path = str(Path(__file__).parent.parent / 'models' / 'pose_landmarker_heavy.task')
 
     # Check if input is a digit (webcam ID) or string (file path)
     video_source = int(args.input) if args.input.isdigit() else args.input

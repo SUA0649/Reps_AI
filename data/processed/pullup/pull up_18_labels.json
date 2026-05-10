@@ -1,0 +1,34 @@
+{
+  "exercise_type": "pullup",
+  "rep_count": 2,
+  "rep_boundaries": [
+    [
+      0,
+      19,
+      35
+    ],
+    [
+      35,
+      51,
+      85
+    ]
+  ],
+  "form_labels": [
+    0,
+    0
+  ],
+  "form_details": [
+    {
+      "min_angle": 102.38083777788219,
+      "depth_ok": false,
+      "half_rep": true
+    },
+    {
+      "min_angle": 92.00054802358832,
+      "depth_ok": false,
+      "half_rep": false
+    }
+  ],
+  "avg_form_quality": 0.0,
+  "num_frames": 86
+}

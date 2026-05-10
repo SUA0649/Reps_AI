@@ -43,11 +43,15 @@ class AutoLabeler:
             'min_angle_bad': 120,
             'hip_sag_max': 20,       # Max hip sag angle
         },
-        'hammer_curl': {
+        'pullup': {
             'primary_angle': 'left_elbow',
-            'min_angle_good': 90,    # Must reach ≤ 90° for full curl
-            'min_angle_bad': 110,    # Partial curl threshold
-            'shoulder_move_max': 0.05,  # Max shoulder Y movement (normalized)
+            'min_angle_good': 70,    # Must reach ≤ 70° for full pullup
+            'min_angle_bad': 100,    # If elbow never goes below 100° → half rep
+        },
+        'plank': {
+            'primary_angle': 'left_hip',
+            'min_angle_good': 150,   # Hip should be straight (close to 180)
+            'min_angle_bad': 120,    # Sagging hips
         },
     }
 
@@ -171,14 +175,13 @@ class AutoLabeler:
                 # Check for hip sag (compare hip Y to shoulder-ankle line)
                 is_good = depth_ok and not half_rep
 
-            elif exercise_type == 'hammer_curl':
-                # Check shoulder stability
-                shoulder_idx = angle_names.index('left_shoulder')
-                shoulder_angles = rep_features[:, shoulder_idx]
-                shoulder_range = np.max(shoulder_angles) - np.min(shoulder_angles)
-                shoulder_ok = shoulder_range < 80  # Less than 80° movement (was 20°, too strict)
-                detail['shoulder_stable'] = shoulder_ok
-                is_good = depth_ok and shoulder_ok and not half_rep
+            elif exercise_type == 'pullup':
+                # Check if they went high enough
+                is_good = depth_ok and not half_rep
+
+            elif exercise_type == 'plank':
+                # Body must be straight
+                is_good = depth_ok and not half_rep
 
             else:
                 is_good = depth_ok and not half_rep
@@ -204,7 +207,8 @@ class AutoLabeler:
         primary = {
             'squat': 'left_knee',
             'pushup': 'left_elbow',
-            'hammer_curl': 'left_elbow',
+            'pullup': 'left_elbow',
+            'plank': 'left_hip',
         }
         angle_idx = angle_names.index(primary[exercise_type])
         angle_signal = features[:, angle_idx]

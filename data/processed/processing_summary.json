@@ -1,17 +1,22 @@
 {
-  "hammer_curl": {
-    "processed": 12,
-    "failed": 0,
-    "total_reps": 32
-  },
   "squat": {
     "processed": 23,
     "failed": 0,
-    "total_reps": 44
+    "total_reps": 50
   },
   "pushup": {
     "processed": 56,
     "failed": 0,
-    "total_reps": 179
+    "total_reps": 173
+  },
+  "pullup": {
+    "processed": 14,
+    "failed": 0,
+    "total_reps": 1129
+  },
+  "plank": {
+    "processed": 5,
+    "failed": 0,
+    "total_reps": 19
   }
 }

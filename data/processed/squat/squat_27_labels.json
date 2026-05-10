@@ -1,58 +1,34 @@
 {
   "exercise_type": "squat",
-  "rep_count": 9,
+  "rep_count": 5,
   "rep_boundaries": [
     [
       0,
-      64,
-      114
+      124,
+      170
     ],
     [
-      114,
-      164,
-      184
+      170,
+      216,
+      275
     ],
     [
-      184,
-      205,
-      231
+      275,
+      335,
+      431
     ],
     [
-      231,
-      258,
-      299
-    ],
-    [
-      299,
-      340,
-      376
-    ],
-    [
-      376,
-      413,
-      471
-    ],
-    [
-      471,
-      530,
+      431,
+      527,
       547
     ],
     [
       547,
-      565,
-      583
-    ],
-    [
-      583,
-      601,
+      567,
       646
     ]
   ],
   "form_labels": [
-    0,
-    1,
-    1,
-    0,
     1,
     1,
     1,
@@ -61,60 +37,36 @@
   ],
   "form_details": [
     {
-      "min_angle": 94.09200889527466,
-      "depth_ok": false,
-      "half_rep": false,
-      "back_ok": true
-    },
-    {
-      "min_angle": 41.94599017170986,
+      "min_angle": 34.570368158087945,
       "depth_ok": true,
       "half_rep": false,
       "back_ok": true
     },
     {
-      "min_angle": 33.704037620584444,
+      "min_angle": 34.924283761227805,
       "depth_ok": true,
       "half_rep": false,
       "back_ok": true
     },
     {
-      "min_angle": 122.45005125508631,
-      "depth_ok": false,
-      "half_rep": true,
-      "back_ok": true
-    },
-    {
-      "min_angle": 33.9481799010258,
+      "min_angle": 37.34847469557459,
       "depth_ok": true,
       "half_rep": false,
       "back_ok": true
     },
     {
-      "min_angle": 27.693923494872354,
+      "min_angle": 46.49797868304271,
       "depth_ok": true,
       "half_rep": false,
       "back_ok": true
     },
     {
-      "min_angle": 23.960871460862688,
-      "depth_ok": true,
-      "half_rep": false,
-      "back_ok": true
-    },
-    {
-      "min_angle": 45.16948399822933,
-      "depth_ok": true,
-      "half_rep": false,
-      "back_ok": true
-    },
-    {
-      "min_angle": 35.32016364090225,
+      "min_angle": 37.967011014998874,
       "depth_ok": true,
       "half_rep": false,
       "back_ok": true
     }
   ],
-  "avg_form_quality": 0.7777777777777778,
+  "avg_form_quality": 1.0,
   "num_frames": 647
 }

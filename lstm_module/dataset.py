@@ -148,6 +148,13 @@ def build_datasets(processed_dir, window_size=60, stride=15,
             continue
 
         exercise_type = exercise_dir.name
+        
+        # Skip plank — it's isometric (no reps), incompatible with the LSTM architecture.
+        # Plank form is handled by a pure angle-based rule in real_time_system.py.
+        if exercise_type == 'plank':
+            print(f"Skipping {exercise_type} (isometric, handled by rule-based system)")
+            continue
+            
         print(f"Loading {exercise_type}...")
 
         # Find all feature files

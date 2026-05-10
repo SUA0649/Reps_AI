@@ -1,43 +1,31 @@
 {
   "exercise_type": "squat",
-  "rep_count": 3,
+  "rep_count": 2,
   "rep_boundaries": [
     [
       0,
-      96,
-      176
+      140,
+      230
     ],
     [
-      176,
-      256,
-      288
-    ],
-    [
-      288,
+      230,
       321,
       431
     ]
   ],
   "form_labels": [
     1,
-    1,
     1
   ],
   "form_details": [
     {
-      "min_angle": 37.64087935428327,
+      "min_angle": 34.374795810308484,
       "depth_ok": true,
       "half_rep": false,
       "back_ok": true
     },
     {
-      "min_angle": 11.93632181487053,
-      "depth_ok": true,
-      "half_rep": false,
-      "back_ok": true
-    },
-    {
-      "min_angle": 41.800830472993965,
+      "min_angle": 36.31769411963299,
       "depth_ok": true,
       "half_rep": false,
       "back_ok": true

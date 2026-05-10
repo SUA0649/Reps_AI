@@ -4,12 +4,12 @@
   "rep_boundaries": [
     [
       0,
-      35,
-      70
+      34,
+      65
     ],
     [
-      70,
-      106,
+      65,
+      97,
       149
     ]
   ],
@@ -19,12 +19,12 @@
   ],
   "form_details": [
     {
-      "min_angle": 79.17094177630341,
+      "min_angle": 76.00755726115284,
       "depth_ok": true,
       "half_rep": false
     },
     {
-      "min_angle": 73.46215965307965,
+      "min_angle": 75.07004976764466,
       "depth_ok": true,
       "half_rep": false
     }
