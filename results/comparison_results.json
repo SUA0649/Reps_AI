@@ -1,17 +1,17 @@
 {
   "cnn_only": {
-    "rep_mae": 0.0,
-    "rep_accuracy": 1.0,
-    "form_accuracy": 0.8549019607843137
+    "rep_mae": 1.864864864864865,
+    "rep_accuracy": 0.8108108108108109,
+    "form_accuracy": 0.4903914590747331
   },
   "lstm_only": {
-    "rep_mae": 0.9235225955967555,
-    "rep_accuracy": 0.24333719582850522,
-    "form_accuracy": 0.473928157589803
+    "rep_mae": 0.7865484109386548,
+    "rep_accuracy": 0.33968957871396893,
+    "form_accuracy": 0.28750923872875095
   },
   "full_pipeline": {
-    "rep_mae": 0.3847045191193511,
-    "rep_accuracy": 0.6199304750869061,
-    "form_accuracy": 0.7728852838933952
+    "rep_mae": 0.31042128603104213,
+    "rep_accuracy": 0.6923872875092387,
+    "form_accuracy": 0.8674057649667406
   }
 }
